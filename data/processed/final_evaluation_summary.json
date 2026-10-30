@@ -5,8 +5,8 @@
     "f1_ci_high": 51.80773249738767,
     "false_contradiction_rate": 0.0,
     "analogy_recall": 100.0,
-    "ece": 0.24908646134038767,
-    "latency_ms": 2.183044950167338
+    "ece": 0.24908646320303282,
+    "latency_ms": 8.864074945449829
   },
   "main_results": {
     "BM25 Retrieval [11]": {
@@ -45,8 +45,8 @@
       "f1_ci_high": 51.80773249738767,
       "false_contradiction_rate": 0.0,
       "analogy_recall": 100.0,
-      "ece": 0.24908646134038767,
-      "latency_ms": 2.183044950167338
+      "ece": 0.24908646320303282,
+      "latency_ms": 8.864074945449829
     }
   },
   "ablation_results": {
@@ -55,35 +55,35 @@
       "accuracy": 57.08333333333333,
       "false_contradiction_rate": 0.0,
       "analogy_recall": 100.0,
-      "latency_ms": 1.9142955541610718
+      "latency_ms": 4.6967347462972
     },
     "CCST w/o Context Gating (\u03bb_g=0)": {
       "macro_f1": 36.85823754789272,
       "accuracy": 50.0,
       "false_contradiction_rate": 100.0,
       "analogy_recall": 100.0,
-      "latency_ms": 1.9604702790578203
+      "latency_ms": 4.798818627993266
     },
     "CCST w/o Unsigned Graph View": {
       "macro_f1": 31.996000173905482,
       "accuracy": 38.333333333333336,
       "false_contradiction_rate": 0.0,
       "analogy_recall": 0.0,
-      "latency_ms": 1.9265125195185344
+      "latency_ms": 4.696797331174214
     },
     "CCST w/o Partial Transport (\u03bb_u=0)": {
       "macro_f1": 44.082965239101206,
       "accuracy": 56.25,
       "false_contradiction_rate": 0.0,
       "analogy_recall": 100.0,
-      "latency_ms": 1.8640577793121338
+      "latency_ms": 4.555820425351461
     },
     "CCST w/o Role Penalty (\u03b2_role=0)": {
       "macro_f1": 47.94618706822394,
       "accuracy": 57.08333333333333,
       "false_contradiction_rate": 0.0,
       "analogy_recall": 100.0,
-      "latency_ms": 1.9336005051930747
+      "latency_ms": 4.676264524459839
     }
   },
   "certificate_quality": {

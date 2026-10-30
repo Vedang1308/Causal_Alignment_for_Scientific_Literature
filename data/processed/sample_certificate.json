@@ -1,10 +1,10 @@
 {
-  "certificate_id": "CERT-DE2595D0",
+  "certificate_id": "CERT-6702E6EA",
   "doc_a_id": "syn_1c_1",
   "doc_b_id": "syn_1d_1",
   "predicted_relation": "contradiction_candidate",
   "relation_probabilities": {
-    "agreement": 0.009636569768190384,
+    "agreement": 0.00963656883686781,
     "cross_domain_analogy": 0.0027961658779531717,
     "contradiction_candidate": 0.8678238391876221,
     "contextual_heterogeneity": 0.09813296794891357,
@@ -20,7 +20,7 @@
       "label_b": "Homo sapiens (humans)",
       "role_a": "population",
       "role_b": "population",
-      "coupling_weight": 0.2307517100869732
+      "coupling_weight": 0.23075171008697729
     },
     {
       "node_a_id": "intervention_low-dose_aspirin",
@@ -29,7 +29,7 @@
       "label_b": "Low-dose aspirin paradoxically",
       "role_a": "intervention",
       "role_b": "intervention",
-      "coupling_weight": 0.0716570757935176
+      "coupling_weight": 0.07165707560137366
     },
     {
       "node_a_id": "outcome_platelet_aggregation_in_post-myocardial_infarction_patients",
@@ -38,7 +38,7 @@
       "label_b": "platelet aggregation in post-myocardial infarction patients",
       "role_a": "outcome",
       "role_b": "outcome",
-      "coupling_weight": 0.15362822192725648
+      "coupling_weight": 0.15362822192992118
     },
     {
       "node_a_id": "intervention_target_intervention",
@@ -47,7 +47,7 @@
       "label_b": "Target intervention",
       "role_a": "intervention",
       "role_b": "intervention",
-      "coupling_weight": 0.15382884886794626
+      "coupling_weight": 0.1538288488679501
     },
     {
       "node_a_id": "outcome_measured_target_outcome",
@@ -56,7 +56,7 @@
       "label_b": "Measured target outcome",
       "role_a": "outcome",
       "role_b": "outcome",
-      "coupling_weight": 0.15382904290110164
+      "coupling_weight": 0.15382904290110574
     }
   ],
   "aligned_edges": [
