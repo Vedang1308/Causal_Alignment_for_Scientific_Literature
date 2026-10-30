@@ -88,8 +88,20 @@ def run_phase4_verification():
     print("  - I_ctx: Material Context Compatibility Index (top-k_c = 10)")
 
     retriever = CandidateRetriever(k_s=15, k_m=15, k_c=10)
+    
+    # Load real neural embeddings generated on GPU if available
+    emb_path = PROJECT_ROOT / "data" / "processed" / "corpus_embeddings.npy"
+    doc_ids_path = PROJECT_ROOT / "data" / "processed" / "corpus_doc_ids.json"
+    embeddings_dict = None
+    if emb_path.exists() and doc_ids_path.exists():
+        raw_embs = np.load(emb_path)
+        with open(doc_ids_path, "r", encoding="utf-8") as f:
+            emb_doc_ids = json.load(f)
+        embeddings_dict = {did: raw_embs[i] for i, did in enumerate(emb_doc_ids) if i < len(raw_embs)}
+        print(f" Loaded {len(embeddings_dict):,} real neural GPU embeddings from {emb_path.name}!")
+
     t0 = time.time()
-    retriever.index_corpus(graphs)
+    retriever.index_corpus(graphs, embeddings=embeddings_dict)
     indexing_time = time.time() - t0
     throughput = len(graphs) / max(1e-4, indexing_time)
 

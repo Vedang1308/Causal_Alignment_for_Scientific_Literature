@@ -107,7 +107,7 @@ def verify_baselines_on_benchmark():
 
     # Baseline 3: SBERT Dense Retrieval
     print("Evaluating Modern Baseline 3: Sentence-BERT Dense Retrieval...")
-    sbert = SBERTRetriever(use_mock_fallback=True).fit(docs)
+    sbert = SBERTRetriever(model_name="sentence-transformers/all-MiniLM-L6-v2", use_mock_fallback=True).fit(docs)
     sbert_metrics = sbert.evaluate_retrieval_metrics(pairs)
     print(f"  - SBERT MRR: {sbert_metrics['MRR']:.4f} | Recall@5: {sbert_metrics['Recall@5']:.4f} | nDCG@5: {sbert_metrics['nDCG@5']:.4f}")
 
