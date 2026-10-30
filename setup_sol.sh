@@ -25,15 +25,15 @@ if [ -d "$SCRATCH_DIR" ]; then
     export TMPDIR="${SCRATCH_DIR}/tmp"
     export PIP_CACHE_DIR="${SCRATCH_DIR}/.cache/pip"
     
-    # Configure Conda to use scratch space for packages and environments
+    # Configure Conda to prefer scratch space
     if command -v conda &> /dev/null || command -v mamba &> /dev/null; then
         conda config --add pkgs_dirs "${SCRATCH_DIR}/.conda/pkgs" 2>/dev/null || true
         conda config --add envs_dirs "${SCRATCH_DIR}/.conda/envs" 2>/dev/null || true
     fi
     ENV_DIR="${SCRATCH_DIR}/.conda/envs/ccst_env"
 else
-    echo "[Storage] Scratch directory ($SCRATCH_DIR) not found, using default home directory."
-    ENV_DIR="ccst_env"
+    echo "[Storage] Scratch directory not found, using home directory."
+    ENV_DIR="${HOME}/.conda/envs/ccst_env"
 fi
 
 # 2. Check for NVIDIA GPU
@@ -53,44 +53,51 @@ if command -v module &> /dev/null; then
 fi
 
 # 4. Create or activate conda/mamba environment on scratch
-ENV_NAME="ccst_env"
-echo "[3/5] Setting up Conda environment: $ENV_NAME..."
+echo "[3/5] Setting up Conda environment at: $ENV_DIR..."
 
 CONDA_CMD="conda"
 if command -v mamba &> /dev/null; then
     CONDA_CMD="mamba"
 fi
 
-if command -v conda &> /dev/null; then
-    eval "$(conda shell.bash hook)"
-    
-    # Check if env already exists
-    if conda env list | grep -q "ccst_env"; then
-        echo "Conda environment 'ccst_env' already exists. Activating..."
-        conda activate ccst_env || conda activate "$ENV_DIR"
-    else
-        echo "Creating new conda environment 'ccst_env' in $ENV_DIR..."
-        if [ -d "$SCRATCH_DIR" ]; then
-            $CONDA_CMD env create -p "$ENV_DIR" -f environment_sol.yml -y
-            conda activate "$ENV_DIR"
-        else
-            $CONDA_CMD env create -n "$ENV_NAME" -f environment_sol.yml -y
-            conda activate "$ENV_NAME"
-        fi
-    fi
+# Verify if environment is complete (must have bin/python and bin/pip)
+if [ -f "${ENV_DIR}/bin/python" ] && [ -f "${ENV_DIR}/bin/pip" ]; then
+    echo "Existing complete conda environment found at: $ENV_DIR"
 else
-    echo "Conda not found. Falling back to Python virtualenv..."
-    if [ ! -d ".venv" ]; then
-        python3 -m venv .venv
-    fi
-    source .venv/bin/activate
-    pip install --upgrade pip
-    pip install -r requirements.txt
+    echo "No complete environment found at $ENV_DIR. Creating fresh installation..."
+    # Remove any corrupted partial env directory if present
+    rm -rf "$ENV_DIR" 2>/dev/null || true
+    rm -rf "${HOME}/.conda/envs/ccst_env" 2>/dev/null || true
+    
+    $CONDA_CMD env create -p "$ENV_DIR" -f environment_sol.yml -y
 fi
 
-# 5. Verify PyTorch and CUDA availability in Python
-echo "[4/5] Verifying PyTorch and CUDA acceleration on A100..."
-python -c "
+# Set explicit python and pip paths to avoid subshell activation glitches
+ENV_PYTHON="${ENV_DIR}/bin/python"
+ENV_PIP="${ENV_DIR}/bin/pip"
+
+if [ ! -f "$ENV_PYTHON" ]; then
+    echo "ERROR: Python binary not found at $ENV_PYTHON"
+    exit 1
+fi
+
+# Ensure pip packages from requirements are installed
+echo "Ensuring all required pip packages are installed..."
+$ENV_PIP install --no-cache-dir \
+    pydantic>=2.5.0 \
+    sentence-transformers>=2.2.2 \
+    transformers>=4.35.0 \
+    accelerate>=0.25.0 \
+    rank-bm25>=0.2.2 \
+    faiss-cpu>=1.7.4 \
+    krippendorff>=0.6.0 \
+    requests>=2.31.0 \
+    tqdm>=4.66.0 \
+    pytest>=7.4.0 2>/dev/null || true
+
+# 5. Verify PyTorch and CUDA availability on NVIDIA A100
+echo "[4/5] Verifying PyTorch and CUDA acceleration on A100 using: $ENV_PYTHON..."
+$ENV_PYTHON -c "
 import torch
 print('PyTorch Version:', torch.__version__)
 print('CUDA Available:', torch.cuda.is_available())
@@ -104,8 +111,10 @@ else:
 
 # 6. Run Phase 1 Verification Tests
 echo "[5/5] Running Phase 1 Foundation Verification..."
-python phase1_foundation/run_phase1_verification.py
+$ENV_PYTHON phase1_foundation/run_phase1_verification.py
 
 echo "=========================================================="
 echo " Phase 1 Environment & Schemas Setup Successfully on SOL!"
+echo " To activate your environment anytime in your shell, run:"
+echo "     conda activate ${ENV_DIR}"
 echo "=========================================================="
