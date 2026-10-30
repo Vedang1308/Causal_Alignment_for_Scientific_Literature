@@ -23,13 +23,24 @@ def compute_krippendorff_alpha_nominal(reliability_data: np.ndarray) -> float:
     """
     Computes nominal Krippendorff's alpha on a matrix of shape (num_annotators, num_items).
     Missing values can be represented as np.nan.
-    Uses the official 'krippendorff' package if installed, with a self-contained fallback.
+    Uses the official 'krippendorff' package if installed, with a robust fallback
+    for single-class slices (where all annotators agree 100% on a single category).
     """
+    valid_mask = ~np.isnan(reliability_data)
+    if not np.any(valid_mask):
+        return 0.0
+
+    unique_vals = np.unique(reliability_data[valid_mask])
+    # If all items in this slice have identical category across all coders -> perfect agreement 1.0
+    if len(unique_vals) <= 1:
+        return 1.0
+
     try:
         import krippendorff
         alpha = krippendorff.alpha(reliability_data=reliability_data, level_of_measurement="nominal")
-        return float(alpha)
-    except ImportError:
+        if not np.isnan(alpha):
+            return float(alpha)
+    except Exception:
         pass
 
     # Self-contained implementation for nominal Krippendorff's alpha
@@ -148,3 +159,4 @@ if __name__ == "__main__":
         print(json.dumps(res, indent=2))
     else:
         print(f"Benchmark file does not exist yet at {b_file}. Run curate_benchmark.py first.")
+

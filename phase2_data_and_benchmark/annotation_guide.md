@@ -88,3 +88,4 @@ flowchart TD
    $$\alpha = 1 - \frac{D_o}{D_e}$$
    * Target: $\alpha \ge 0.70$ across natural pairs.
 4. If annotators disagree, the case is flagged for group adjudication to produce the final consensus label (`adjudicated = True`).
+

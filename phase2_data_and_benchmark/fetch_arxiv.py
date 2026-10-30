@@ -154,3 +154,4 @@ if __name__ == "__main__":
     print(f"Sample fetched: {len(records)} records")
     if records:
         print(f"First record: {records[0].doc_id} - {records[0].title}")
+

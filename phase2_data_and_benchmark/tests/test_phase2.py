@@ -88,3 +88,4 @@ def test_krippendorff_alpha_agreement():
     assert 0.70 <= alpha <= 1.0, f"Expected alpha >= 0.70, got {alpha}"
     assert results["multi_annotated_pairs"] == 180
     assert len(results["annotator_ids"]) >= 3
+
