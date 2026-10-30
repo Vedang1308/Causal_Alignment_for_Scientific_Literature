@@ -9,12 +9,25 @@ academic tables, callout boxes, and certificate formatting.
 import sys
 from pathlib import Path
 
-HTML_CONTENT = """<!DOCTYPE html>
+HTML_CONTENT = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Context-Conditioned Signed Partial Transport (CCST) - Final Technical Report</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)'], ['$', '$']],
+    displayMath: [['\\[', '\\]'], ['$$', '$$']],
+    processEscapes: true
+  },
+  options: {
+    renderActions: {
+      assistiveMml: []
+    }
+  }
+};
+</script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
   @page {
@@ -571,3 +584,4 @@ def build_html():
 
 if __name__ == "__main__":
     build_html()
+

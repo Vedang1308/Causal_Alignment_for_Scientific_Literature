@@ -3,7 +3,20 @@
 <head>
 <meta charset="utf-8">
 <title>Context-Conditioned Signed Partial Transport (CCST) - Final Technical Report</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)'], ['$', '$']],
+    displayMath: [['\\[', '\\]'], ['$$', '$$']],
+    processEscapes: true
+  },
+  options: {
+    renderActions: {
+      assistiveMml: []
+    }
+  }
+};
+</script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
   @page {
@@ -313,7 +326,7 @@ With more than three million peer-reviewed scientific articles published annuall
 
 <p>
 To resolve this dilemma, we propose <strong>Context-Conditioned Signed Partial Transport (CCST)</strong>. Rather than estimating causal veracity, CCST aligns <em>reported mechanism graphs</em>: what each paper claims happens, under which material scope conditions, with what directional polarity, and supported by what textual evidence. CCST establishes a formal five-way taxonomy:
-$$\mathcal{Y} = \{	ext{agreement}, 	ext{cross\_domain\_analogy}, 	ext{contradiction\_candidate}, 	ext{contextual\_heterogeneity}, 	ext{insufficient\_comparability}\}$$
+$$\mathcal{Y} = \{\text{agreement}, \text{cross\_domain\_analogy}, \text{contradiction\_candidate}, \text{contextual\_heterogeneity}, \text{insufficient\_comparability}\}$$
 </p>
 
 <h2>2. Mathematical Formulations & Data Schemas</h2>
@@ -321,61 +334,58 @@ $$\mathcal{Y} = \{	ext{agreement}, 	ext{cross\_domain\_analogy}, 	ext{contradict
 <h3>2.1 Provenance-Grounded Causal Mechanism Tuple (Equation 1)</h3>
 <p>
 For document \(i\), each reported causal mechanism \(m\) is extracted as an attributed 10-tuple:
-$$q_{im} = (C, P, A, M, Y, 	au, \delta, \eta, u, p)_{im}$$
-where \(C = (c_{	ext{species}}, c_{	ext{env}}, c_{	ext{dose}}, c_{	ext{time}})\) specifies material context dimensions; \(P\) is the study population or system; \(A\) is the active intervention; \(M = [m_1, \dots, m_k]\) represents intermediate mediating steps; \(Y\) is the target outcome; \(	au\) is observation time horizon; \(\delta \in \{+1, -1, 0\}\) is directional polarity; \(\eta \in \{	ext{observed}, 	ext{hypothesized}, 	ext{quoted}, 	ext{simulated}\}\) is epistemic status; \(u \in [0, 1]\) is extraction uncertainty; and \(p = (start, end)\) is the exact character span grounding the claim in the source text.
+$$q_{im} = (C, P, A, M, Y, \tau, \delta, \eta, u, p)_{im}$$
+where \(C = (c_{\text{species}}, c_{\text{env}}, c_{\text{dose}}, c_{\text{time}})\) specifies material context dimensions; \(P\) is the study population or system; \(A\) is the active intervention; \(M = [m_1, \dots, m_k]\) represents intermediate mediating steps; \(Y\) is the target outcome; \(\tau\) is observation time horizon; \(\delta \in \{+1, -1, 0\}\) is directional polarity; \(\eta \in \{\text{observed}, \text{hypothesized}, \text{quoted}, \text{simulated}\}\) is epistemic status; \(u \in [0, 1]\) is extraction uncertainty; and \(p = (start, end)\) is the exact character span grounding the claim in the source text.
 </p>
 
 <h3>2.2 Material Context Scope Algebra & Gating Penalty</h3>
 <p>
 Context compatibility across documents \(i\) and \(j\) is evaluated across four dimensions using a ternary algebra:
-$$c_h(i, j) \in \{	ext{COMPATIBLE}, 	ext{INCOMPATIBLE}, 	ext{UNKNOWN}\}, \quad h \in \{	ext{species}, 	ext{env}, 	ext{dose}, 	ext{time}\}$$
-The context gating penalty \(\Phi_{	ext{gate}}\) quantifies material scope divergence:
-$$\Phi_{	ext{gate}}(G_i, G_j) = 1.0 - \sum_{h=1}^4 \omega_h \cdot \mathbf{1}[c_h(i, j) = 	ext{COMPATIBLE}], \quad \sum \omega_h = 1.0$$
-When critical physical conditions diverge (e.g., human vs. rodent, therapeutic vs. toxic overdose), \(\Phi_{	ext{gate}} 	o 1.0\), directly penalizing contradiction classifications.
+$$c_h(i, j) \in \{\text{COMPATIBLE}, \text{INCOMPATIBLE}, \text{UNKNOWN}\}, \quad h \in \{\text{species}, \text{env}, \text{dose}, \text{time}\}$$
+The context gating penalty \(\Phi_{\text{gate}}\) quantifies material scope divergence:
+$$\Phi_{\text{gate}}(G_i, G_j) = 1.0 - \sum_{h=1}^4 \omega_h \cdot \mathbf{1}[c_h(i, j) = \text{COMPATIBLE}], \quad \sum \omega_h = 1.0$$
+When critical physical conditions diverge (e.g., human vs. rodent, therapeutic vs. toxic overdose), \(\Phi_{\text{gate}} \to 1.0\), directly penalizing contradiction classifications.
 </p>
 
 <h3>2.3 The CCST Optimization Objective (Equation 2)</h3>
 <p>
 Let \(G_i\) and \(G_j\) be two attributed mechanism graphs with normalized node probability masses \(\sum p_i(u) = 1.0\). The CCST alignment problem is formulated as the following constrained partial optimal transport program:
-$$\mathcal{D}_{	ext{CCST}}(G_i, G_j) = \min_{T \ge 0} \left[ \sum_{u,u'} M_{uu'} T_{uu'} + lpha \sum_{u,v,u',v'} L_{uv, u'v'} T_{uu'} T_{vv'} + \lambda_u U(T) + \lambda_g \Phi_{	ext{gate}}(G_i, G_j) ight]$$
+$$\mathcal{D}_{\text{CCST}}(G_i, G_j) = \min_{T \ge 0} \left[ \sum_{u,u'} M_{uu'} T_{uu'} + \alpha \sum_{u,v,u',v'} L_{uv, u'v'} T_{uu'} T_{vv'} + \lambda_u U(T) + \lambda_g \Phi_{\text{gate}}(G_i, G_j) \right]$$
 Subject to the partial transport constraints:
-$$T \mathbf{1} \le p_i, \quad T^	op \mathbf{1} \le p_j$$
+$$T \mathbf{1} \le p_i, \quad T^\top \mathbf{1} \le p_j$$
 Where:
 </p>
 <ul>
-  <li><strong>Node Cost \(M_{uu'}\):</strong> Balances semantic embedding distance with functional causal roles (\(ho \in \{	ext{intervention}, 	ext{mediator}, 	ext{outcome}\}\)):
-  $$M_{uu'} = (1 - eta_{	ext{role}}) \cdot (1 - \cos(x_u, x_{u'})) + eta_{	ext{role}} \cdot \mathbf{1}[ho(u) 
-eq ho(u')]$$</li>
+  <li><strong>Node Cost \(M_{uu'}\):</strong> Balances semantic embedding distance with functional causal roles (\(\rho \in \{\text{intervention}, \text{mediator}, \text{outcome}\}\)):
+  $$M_{uu'} = (1 - \beta_{\text{role}}) \cdot (1 - \cos(x_u, x_{u'})) + \beta_{\text{role}} \cdot \mathbf{1}[\rho(u) \neq \rho(u')]$$</li>
   <li><strong>Signed Edge Tensor \(L_{uv, u'v'}\):</strong> Measures structural distortion, directional flow, and polarity sign flip:
-  $$L_{uv, u'v'} = |A_{uv} - A_{u'v'}| + \gamma_{	ext{sign}} \cdot |\delta_{uv} - \delta_{u'v'}| + \gamma_{	ext{type}} \cdot \mathbf{1}[R_{uv} 
-eq R_{u'v'}]$$</li>
+  $$L_{uv, u'v'} = |A_{uv} - A_{u'v'}| + \gamma_{\text{sign}} \cdot |\delta_{uv} - \delta_{u'v'}| + \gamma_{\text{type}} \cdot \mathbf{1}[R_{uv} \neq R_{u'v'}]$$</li>
   <li><strong>Unaligned Mass Penalty \(U(T)\):</strong> Allows peripheral mechanisms to remain unaligned without penalty corruption:
-  $$U(T) = \|p_i\|_1 + \|p_j\|_1 - 2\mathbf{1}^	op T \mathbf{1} = 2(1 - \mathbf{1}^	op T \mathbf{1})$$</li>
+  $$U(T) = \|p_i\|_1 + \|p_j\|_1 - 2\mathbf{1}^\top T \mathbf{1} = 2(1 - \mathbf{1}^\top T \mathbf{1})$$</li>
 </ul>
 
 <div class="theorem-box">
   <div class="theorem-title">The Dual-View Signed vs. Unsigned Distance Gap (&Delta;<sub>sign</sub>)</div>
-  Let \(D_{	ext{signed}}\) be the optimal value of Equation (2) with \(\gamma_{	ext{sign}} = 0.5\), and \(D_{	ext{unsign}}\) be the value with \(\gamma_{	ext{sign}} = 0\). The directional gap is:
-  $$\Delta_{	ext{sign}} = D_{	ext{signed}} - D_{	ext{unsign}}$$
+  Let \(D_{\text{signed}}\) be the optimal value of Equation (2) with \(\gamma_{\text{sign}} = 0.5\), and \(D_{\text{unsign}}\) be the value with \(\gamma_{\text{sign}} = 0\). The directional gap is:
+  $$\Delta_{\text{sign}} = D_{\text{signed}} - D_{\text{unsign}}$$
   <ul>
-    <li><strong>Theorem 1 (True Contradiction):</strong> A pair represents a genuine contradiction candidate iff \(\Delta_{	ext{sign}} > 	au_{	ext{sign}}\), \(\Phi_{	ext{gate}} \le 	au_{	ext{gate}}\), and aligned mass \(\mathbf{1}^	op T^* \mathbf{1} \ge 	au_{	ext{mass}}\).</li>
-    <li><strong>Theorem 2 (Contextual Heterogeneity):</strong> A pair represents contextual heterogeneity iff \(\Delta_{	ext{sign}} > 	au_{	ext{sign}}\) and \(\Phi_{	ext{gate}} > 	au_{	ext{gate}}\).</li>
-    <li><strong>Theorem 3 (Cross-Domain Analogy):</strong> A pair represents a cross-domain analogy iff \(D_{	ext{unsign}} \le 	au_{	ext{struct}}\), \(\Delta_{	ext{sign}} pprox 0\), and \(	ext{domain}(i) 
-eq 	ext{domain}(j)\).</li>
+    <li><strong>Theorem 1 (True Contradiction):</strong> A pair represents a genuine contradiction candidate iff \(\Delta_{\text{sign}} > \tau_{\text{sign}}\), \(\Phi_{\text{gate}} \le \tau_{\text{gate}}\), and aligned mass \(\mathbf{1}^\top T^* \mathbf{1} \ge \tau_{\text{mass}}\).</li>
+    <li><strong>Theorem 2 (Contextual Heterogeneity):</strong> A pair represents contextual heterogeneity iff \(\Delta_{\text{sign}} > \tau_{\text{sign}}\) and \(\Phi_{\text{gate}} > \tau_{\text{gate}}\).</li>
+    <li><strong>Theorem 3 (Cross-Domain Analogy):</strong> A pair represents a cross-domain analogy iff \(D_{\text{unsign}} \le \tau_{\text{struct}}\), \(\Delta_{\text{sign}} \approx 0\), and \(\text{domain}(i) \neq \text{domain}(j)\).</li>
   </ul>
 </div>
 
 <h2>3. Scalable Tri-Index Sparse Candidate Retrieval</h2>
 <p>
-Exact pairwise optimal transport across \(N = 2,054\) documents requires \(inom{N}{2} pprox 1,999,000\) comparisons. To scale search to an empirical \(O(N \log N + N \cdot k_{	ext{ccst}})\), CCST constructs three sparse Approximate Nearest Neighbor (ANN) indexes:
+Exact pairwise optimal transport across \(N = 2,054\) documents requires \(\binom{N}{2} \approx 1,999,000\) comparisons. To scale search to an empirical \(O(N \log N + N \cdot k_{\text{ccst}})\), CCST constructs three sparse Approximate Nearest Neighbor (ANN) indexes:
 </p>
 <ol>
-  <li><strong>Dense Semantic Index (\(\mathcal{I}_{	ext{sem}}\)):</strong> FAISS <code>IndexFlatIP</code> over normalized 384-dimensional Sentence-BERT vectors, retrieving top-\(k_s = 15\) semantic neighbors.</li>
-  <li><strong>Topological Graph Index (\(\mathcal{I}_{	ext{graph}}\)):</strong> 2-iteration Weisfeiler-Lehman (WL) subtree hashing over unsigned adjacency matrices, retrieving top-\(k_m = 15\) structural matches regardless of vocabulary.</li>
-  <li><strong>Context Compatibility Index (\(\mathcal{I}_{	ext{ctx}}\)):</strong> Inverted bitvector index over categorical context dimensions, retrieving top-\(k_c = 10\) scope-compatible documents.</li>
+  <li><strong>Dense Semantic Index (\(\mathcal{I}_{\text{sem}}\)):</strong> FAISS <code>IndexFlatIP</code> over normalized 384-dimensional Sentence-BERT vectors, retrieving top-\(k_s = 15\) semantic neighbors.</li>
+  <li><strong>Topological Graph Index (\(\mathcal{I}_{\text{graph}}\)):</strong> 2-iteration Weisfeiler-Lehman (WL) subtree hashing over unsigned adjacency matrices, retrieving top-\(k_m = 15\) structural matches regardless of vocabulary.</li>
+  <li><strong>Context Compatibility Index (\(\mathcal{I}_{\text{ctx}}\)):</strong> Inverted bitvector index over categorical context dimensions, retrieving top-\(k_c = 10\) scope-compatible documents.</li>
 </ol>
 <p>
-Restricting optimal transport to \(\mathcal{C}(d_i) = \mathcal{N}_{	ext{sem}} \cup \mathcal{N}_{	ext{graph}} \cup \mathcal{N}_{	ext{ctx}}\) (~40 candidates) reduces the search space from 1,999,000 to 80,000 pairs &mdash; an empirical <strong>25.0&times; speedup</strong> with an index build time of 0.23 seconds (8,857 graphs/sec).
+Restricting optimal transport to \(\mathcal{C}(d_i) = \mathcal{N}_{\text{sem}} \cup \mathcal{N}_{\text{graph}} \cup \mathcal{N}_{\text{ctx}}\) (~40 candidates) reduces the search space from 1,999,000 to 80,000 pairs &mdash; an empirical <strong>25.0&times; speedup</strong> with an index build time of 0.23 seconds (8,857 graphs/sec).
 </p>
 
 <h2>4. Empirical Evaluation & Benchmark Results</h2>
