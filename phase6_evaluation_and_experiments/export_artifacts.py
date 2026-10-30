@@ -92,3 +92,4 @@ def export_latex_table2(ablation_results: Dict[str, Dict[str, Any]], out_path: P
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
+

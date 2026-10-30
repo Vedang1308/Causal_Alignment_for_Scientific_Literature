@@ -46,3 +46,4 @@ def evaluate_certificate_quality(
         "provenance_grounding_coverage": float(grounded_both / n * 100.0),
         "total_certificates_audited": float(n),
     }
+

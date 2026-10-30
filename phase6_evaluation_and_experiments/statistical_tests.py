@@ -112,3 +112,4 @@ def compute_ece(
             ece += (bin_size / N) * abs(bin_acc - bin_conf)
 
     return float(ece)
+
