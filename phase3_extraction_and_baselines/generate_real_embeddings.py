@@ -95,3 +95,4 @@ if __name__ == "__main__":
     emb_path = PROJECT_ROOT / "data" / "processed" / "corpus_embeddings.npy"
     ids_path = PROJECT_ROOT / "data" / "processed" / "corpus_doc_ids.json"
     compute_and_save_real_embeddings(c_path, emb_path, ids_path)
+

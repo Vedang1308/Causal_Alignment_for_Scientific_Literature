@@ -144,12 +144,14 @@ def fetch_pubmed_abstracts(pmids: List[str], batch_size: int = 100, delay_second
 def fetch_pubmed_records(
     query: str = "(hypertension OR atherosclerosis OR oncology OR infection OR drug therapy) AND hasabstract[text]",
     max_records: int = 1000,
+    batch_size: int = 100,
+    delay_seconds: float = 0.5,
 ) -> List[DocumentRecord]:
     """Top-level function to search and fetch biomedical records."""
     print(f"Searching PubMed for up to {max_records} records with query: '{query}'...")
     pmids = search_pubmed_ids(query, max_records=max_records)
     print(f"Retrieved {len(pmids)} PMIDs. Fetching full abstract records...")
-    return fetch_pubmed_abstracts(pmids)
+    return fetch_pubmed_abstracts(pmids, batch_size=batch_size, delay_seconds=delay_seconds)
 
 
 if __name__ == "__main__":
