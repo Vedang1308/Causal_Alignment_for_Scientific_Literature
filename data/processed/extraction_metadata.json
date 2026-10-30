@@ -1,0 +1,16 @@
+{
+  "total_documents_processed": 2000,
+  "total_mechanisms_extracted": 8015,
+  "avg_mechanisms_per_doc": 4.01,
+  "total_graph_nodes": 13247,
+  "total_graph_edges": 17543,
+  "avg_nodes_per_graph": 6.62,
+  "avg_edges_per_graph": 8.77,
+  "polarity_distribution": {
+    "POSITIVE": 759,
+    "NEGATIVE": 2107,
+    "NULL": 5149
+  },
+  "elapsed_seconds": 0.46,
+  "throughput_docs_per_sec": 4392.7
+}
