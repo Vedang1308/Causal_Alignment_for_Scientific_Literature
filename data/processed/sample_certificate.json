@@ -1,0 +1,180 @@
+{
+  "certificate_id": "CERT-DE2595D0",
+  "doc_a_id": "syn_1c_1",
+  "doc_b_id": "syn_1d_1",
+  "predicted_relation": "contradiction_candidate",
+  "relation_probabilities": {
+    "agreement": 0.009636569768190384,
+    "cross_domain_analogy": 0.0027961658779531717,
+    "contradiction_candidate": 0.8678238391876221,
+    "contextual_heterogeneity": 0.09813296794891357,
+    "insufficient_comparability": 0.021610548719763756
+  },
+  "abstained": false,
+  "abstention_reason": null,
+  "aligned_nodes": [
+    {
+      "node_a_id": "population_homo_sapiens_(humans)",
+      "node_b_id": "population_homo_sapiens_(humans)",
+      "label_a": "Homo sapiens (humans)",
+      "label_b": "Homo sapiens (humans)",
+      "role_a": "population",
+      "role_b": "population",
+      "coupling_weight": 0.2307517100869732
+    },
+    {
+      "node_a_id": "intervention_low-dose_aspirin",
+      "node_b_id": "intervention_low-dose_aspirin_paradoxically",
+      "label_a": "Low-dose aspirin",
+      "label_b": "Low-dose aspirin paradoxically",
+      "role_a": "intervention",
+      "role_b": "intervention",
+      "coupling_weight": 0.0716570757935176
+    },
+    {
+      "node_a_id": "outcome_platelet_aggregation_in_post-myocardial_infarction_patients",
+      "node_b_id": "outcome_platelet_aggregation_in_post-myocardial_infarction_patients",
+      "label_a": "platelet aggregation in post-myocardial infarction patients",
+      "label_b": "platelet aggregation in post-myocardial infarction patients",
+      "role_a": "outcome",
+      "role_b": "outcome",
+      "coupling_weight": 0.15362822192725648
+    },
+    {
+      "node_a_id": "intervention_target_intervention",
+      "node_b_id": "intervention_target_intervention",
+      "label_a": "Target intervention",
+      "label_b": "Target intervention",
+      "role_a": "intervention",
+      "role_b": "intervention",
+      "coupling_weight": 0.15382884886794626
+    },
+    {
+      "node_a_id": "outcome_measured_target_outcome",
+      "node_b_id": "outcome_measured_target_outcome",
+      "label_a": "Measured target outcome",
+      "label_b": "Measured target outcome",
+      "role_a": "outcome",
+      "role_b": "outcome",
+      "coupling_weight": 0.15382904290110164
+    }
+  ],
+  "aligned_edges": [
+    {
+      "edge_a": [
+        "population_homo_sapiens_(humans)",
+        "intervention_low-dose_aspirin"
+      ],
+      "edge_b": [
+        "population_homo_sapiens_(humans)",
+        "intervention_low-dose_aspirin_paradoxically"
+      ],
+      "sign_a": 0,
+      "sign_b": 0,
+      "is_sign_flip": false,
+      "edge_type_a": "regulates",
+      "edge_type_b": "regulates"
+    },
+    {
+      "edge_a": [
+        "intervention_low-dose_aspirin",
+        "outcome_platelet_aggregation_in_post-myocardial_infarction_patients"
+      ],
+      "edge_b": [
+        "intervention_low-dose_aspirin_paradoxically",
+        "outcome_platelet_aggregation_in_post-myocardial_infarction_patients"
+      ],
+      "sign_a": -1,
+      "sign_b": 1,
+      "is_sign_flip": true,
+      "edge_type_a": "inhibits",
+      "edge_type_b": "causes"
+    },
+    {
+      "edge_a": [
+        "population_homo_sapiens_(humans)",
+        "intervention_target_intervention"
+      ],
+      "edge_b": [
+        "population_homo_sapiens_(humans)",
+        "intervention_target_intervention"
+      ],
+      "sign_a": 0,
+      "sign_b": 0,
+      "is_sign_flip": false,
+      "edge_type_a": "regulates",
+      "edge_type_b": "regulates"
+    }
+  ],
+  "context_diffs": [
+    {
+      "dimension": "species_or_system",
+      "value_a": "Homo sapiens (humans)",
+      "value_b": "Homo sapiens (humans)",
+      "compatibility": 1.0
+    },
+    {
+      "dimension": "environment",
+      "value_a": null,
+      "value_b": null,
+      "compatibility": -1.0
+    },
+    {
+      "dimension": "dose_or_scale",
+      "value_a": "low therapeutic dose",
+      "value_b": "low therapeutic dose",
+      "compatibility": 1.0
+    },
+    {
+      "dimension": "time_horizon",
+      "value_a": null,
+      "value_b": null,
+      "compatibility": -1.0
+    }
+  ],
+  "matched_context_fields": [
+    "species_or_system: 'Homo sapiens (humans)' == 'Homo sapiens (humans)'",
+    "dose_or_scale: 'low therapeutic dose' == 'low therapeutic dose'"
+  ],
+  "incompatible_context_fields": [],
+  "unknown_context_fields": [
+    "environment (missing in one or both documents)",
+    "time_horizon (missing in one or both documents)"
+  ],
+  "minimal_disagreement_set": [
+    "Conflicting causal link: Doc A [intervention_low-dose_aspirin -> outcome_platelet_aggregation_in_post-myocardial_infarction_patients (NEGATIVE)] opposes Doc B [intervention_low-dose_aspirin_paradoxically -> outcome_platelet_aggregation_in_post-myocardial_infarction_patients (POSITIVE)]"
+  ],
+  "unmatched_mechanisms_a": [
+    "Node mediator_quantitative_western_blot_assays"
+  ],
+  "unmatched_mechanisms_b": [],
+  "evidence_spans_a": [
+    {
+      "start_char": 0,
+      "end_char": 85,
+      "text": "Low-dose aspirin reduces platelet aggregation in post-myocardial infarction patients.",
+      "section": "Abstract"
+    },
+    {
+      "start_char": 86,
+      "end_char": 170,
+      "text": "Results were confirmed via quantitative Western blot assays and clinical monitoring.",
+      "section": "Abstract"
+    }
+  ],
+  "evidence_spans_b": [
+    {
+      "start_char": 0,
+      "end_char": 100,
+      "text": "Low-dose aspirin paradoxically elevates platelet aggregation in post-myocardial infarction patients.",
+      "section": "Abstract"
+    },
+    {
+      "start_char": 101,
+      "end_char": 205,
+      "text": "Identical assay protocols and population cohorts confirmed significant effect in the opposing direction.",
+      "section": "Abstract"
+    }
+  ],
+  "gap_explained_fraction": 1.0
+}
