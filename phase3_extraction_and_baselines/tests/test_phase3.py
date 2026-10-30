@@ -153,3 +153,4 @@ def test_direct_llm_judge_baseline():
     pred = judge.predict_pair(pair)
     # The baseline flaw: naive textual comparison predicts CONTRADICTION_CANDIDATE because reduced vs increased
     assert pred == RelationType.CONTRADICTION_CANDIDATE
+

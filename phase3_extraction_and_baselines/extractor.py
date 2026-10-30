@@ -351,3 +351,4 @@ if __name__ == "__main__":
     print(f"Extracted {len(claims)} mechanisms:")
     for c in claims:
         print(f"  - [{c.polarity.name}] {c.summary()} (chars: {c.provenance.start_char}-{c.provenance.end_char})")
+

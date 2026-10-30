@@ -111,3 +111,4 @@ if __name__ == "__main__":
     g_path = PROJECT_ROOT / "data" / "processed" / "document_graphs.jsonl"
     m_path = PROJECT_ROOT / "data" / "processed" / "extracted_mechanisms.jsonl"
     run_batch_extraction(c_path, g_path, m_path)
+

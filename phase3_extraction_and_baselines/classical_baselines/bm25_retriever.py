@@ -154,3 +154,4 @@ if __name__ == "__main__":
     print(f"Top 3 BM25 matches for '{pairs[0].doc_a.title[:40]}...':")
     for doc_id, score in res:
         print(f"  - {doc_id}: score = {score:.3f}")
+

@@ -42,3 +42,4 @@ if __name__ == "__main__":
     retriever = ContrieverRetriever().fit(docs)
     res = retriever.evaluate_retrieval_metrics(pairs)
     print("Contriever Retriever Evaluation:", res)
+
