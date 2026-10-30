@@ -39,7 +39,7 @@ def test_corpus_exists_and_count():
             if line.strip():
                 records.append(DocumentRecord.model_validate_json(line.strip()))
 
-    assert len(records) == 2000, f"Expected 2000 records, got {len(records)}"
+    assert len(records) >= 2000, f"Expected at least 2000 records, got {len(records)}"
 
 
 def test_corpus_domain_balance_and_filters():

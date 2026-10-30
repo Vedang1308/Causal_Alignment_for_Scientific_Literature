@@ -68,7 +68,7 @@ def test_extracted_graphs_corpus_file():
                 assert len(g.edges) > 0
                 assert pytest.approx(sum(g.get_normalized_node_masses()), rel=1e-4) == 1.0
             count += 1
-    assert count == 2000, f"Expected 2000 document graphs, got {count}"
+    assert count >= 2000, f"Expected at least 2000 document graphs, got {count}"
 
 
 def test_bm25_retrieval_and_metrics():

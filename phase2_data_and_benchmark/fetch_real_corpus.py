@@ -164,8 +164,29 @@ def fetch_2000_real_documents(
     else:
         print(f"\n[4/4] Control systems papers already satisfied ({current_ctrl} records).")
 
+    # Balance and trim to exactly 2,000 documents as specified in Proposal Section II
+    target_count = 2000
+    if len(all_records) > target_count:
+        by_domain = {}
+        for r in all_records:
+            by_domain.setdefault(r.domain, []).append(r)
+        
+        trimmed = []
+        target_per = target_count // len(by_domain)  # 500 each
+        leftovers = []
+        for d, recs in by_domain.items():
+            trimmed.extend(recs[:target_per])
+            leftovers.extend(recs[target_per:])
+        
+        if len(trimmed) < target_count:
+            needed_extra = target_count - len(trimmed)
+            trimmed.extend(leftovers[:needed_extra])
+        
+        all_records = trimmed[:target_count]
+        print(f"Trimmed and balanced to exactly {len(all_records)} documents across domains.")
+
     print("\n" + "=" * 70)
-    print(f" Total Real Public Records Collected: {len(all_records)}")
+    print(f" Total Real Public Records Frozen: {len(all_records)}")
     print("=" * 70)
 
     # Save to both output_path and official corpus.jsonl
