@@ -11,12 +11,12 @@ echo "=========================================================="
 echo " Starting CCST Environment Setup on ASU SOL Supercomputer"
 echo "=========================================================="
 
-# 1. Resolve Storage Quota: Redirect Conda/Pip from /home to /scratch
 USER_NAME=$(whoami)
 SCRATCH_DIR="/scratch/${USER_NAME}"
 
+# 1. Resolve Storage Quota: Permanently symlink ~/.conda to /scratch
 if [ -d "$SCRATCH_DIR" ]; then
-    echo "[Storage] Using high-capacity scratch space at: $SCRATCH_DIR"
+    echo "[Storage] High-capacity scratch detected at: $SCRATCH_DIR"
     mkdir -p "${SCRATCH_DIR}/.conda/pkgs"
     mkdir -p "${SCRATCH_DIR}/.conda/envs"
     mkdir -p "${SCRATCH_DIR}/tmp"
@@ -24,12 +24,16 @@ if [ -d "$SCRATCH_DIR" ]; then
 
     export TMPDIR="${SCRATCH_DIR}/tmp"
     export PIP_CACHE_DIR="${SCRATCH_DIR}/.cache/pip"
-    
-    # Configure Conda to prefer scratch space
-    if command -v conda &> /dev/null || command -v mamba &> /dev/null; then
-        conda config --add pkgs_dirs "${SCRATCH_DIR}/.conda/pkgs" 2>/dev/null || true
-        conda config --add envs_dirs "${SCRATCH_DIR}/.conda/envs" 2>/dev/null || true
+    export CONDA_PKGS_DIRS="${SCRATCH_DIR}/.conda/pkgs"
+    export CONDA_ENVS_PATH="${SCRATCH_DIR}/.conda/envs"
+
+    # If ~/.conda is still in /home (filling home quota), redirect it to scratch
+    if [ ! -L "${HOME}/.conda" ]; then
+        echo "[Storage] Symlinking ~/.conda -> ${SCRATCH_DIR}/.conda to protect /home quota..."
+        rm -rf "${HOME}/.conda" 2>/dev/null || true
+        ln -sfn "${SCRATCH_DIR}/.conda" "${HOME}/.conda"
     fi
+
     ENV_DIR="${SCRATCH_DIR}/.conda/envs/ccst_env"
 else
     echo "[Storage] Scratch directory not found, using home directory."
@@ -52,33 +56,35 @@ if command -v module &> /dev/null; then
     module load mamba/latest 2>/dev/null || module load mamba 2>/dev/null || true
 fi
 
-# 4. Create or activate conda/mamba environment on scratch
-echo "[3/5] Setting up Conda environment at: $ENV_DIR..."
+# 4. Clean any aborted or corrupted packages from scratch
+echo "[3/5] Cleaning corrupted package caches..."
+if [ -d "${SCRATCH_DIR}/.conda/pkgs" ]; then
+    # Remove any corrupted partial locks or tarballs
+    rm -f "${SCRATCH_DIR}/.conda/pkgs/*.lock" 2>/dev/null || true
+    rm -f "${SCRATCH_DIR}/.conda/pkgs/*.part" 2>/dev/null || true
+fi
+
+# 5. Create or activate conda/mamba environment on scratch
+echo "[4/5] Setting up Conda environment at: $ENV_DIR..."
 
 CONDA_CMD="conda"
 if command -v mamba &> /dev/null; then
     CONDA_CMD="mamba"
 fi
 
-# Verify if environment is complete (must have bin/python and bin/pip)
-if [ -f "${ENV_DIR}/bin/python" ] && [ -f "${ENV_DIR}/bin/pip" ]; then
-    echo "Existing complete conda environment found at: $ENV_DIR"
-else
-    echo "No complete environment found at $ENV_DIR. Creating fresh installation..."
-    # Remove any corrupted partial env directory if present
-    rm -rf "$ENV_DIR" 2>/dev/null || true
-    rm -rf "${HOME}/.conda/envs/ccst_env" 2>/dev/null || true
-    
-    $CONDA_CMD env create -p "$ENV_DIR" -f environment_sol.yml -y
-fi
-
-# Set explicit python and pip paths to avoid subshell activation glitches
 ENV_PYTHON="${ENV_DIR}/bin/python"
 ENV_PIP="${ENV_DIR}/bin/pip"
 
-if [ ! -f "$ENV_PYTHON" ]; then
-    echo "ERROR: Python binary not found at $ENV_PYTHON"
-    exit 1
+if [ -f "$ENV_PYTHON" ] && [ -f "$ENV_PIP" ]; then
+    echo "Existing complete conda environment found at: $ENV_DIR"
+else
+    echo "Creating clean environment in $ENV_DIR..."
+    rm -rf "$ENV_DIR" 2>/dev/null || true
+    
+    # Clean partial packages before creating to avoid checksum error
+    $CONDA_CMD clean -pkgs -y 2>/dev/null || true
+
+    $CONDA_CMD env create -p "$ENV_DIR" -f environment_sol.yml -y
 fi
 
 # Ensure pip packages from requirements are installed
@@ -95,22 +101,27 @@ $ENV_PIP install --no-cache-dir \
     tqdm>=4.66.0 \
     pytest>=7.4.0 2>/dev/null || true
 
-# 5. Verify PyTorch and CUDA availability on NVIDIA A100
-echo "[4/5] Verifying PyTorch and CUDA acceleration on A100 using: $ENV_PYTHON..."
+# 6. Verify PyTorch and CUDA availability on NVIDIA A100
+echo "[5/5] Verifying PyTorch and CUDA acceleration on A100..."
 $ENV_PYTHON -c "
 import torch
+print('==============================================')
 print('PyTorch Version:', torch.__version__)
 print('CUDA Available:', torch.cuda.is_available())
 if torch.cuda.is_available():
     print('Device Name:', torch.cuda.get_device_name(0))
     print('Device Count:', torch.cuda.device_count())
     print('VRAM (GB):', round(torch.cuda.get_device_properties(0).total_memory / 1e9, 2))
-else:
-    print('WARNING: CUDA is not available inside PyTorch.')
+    print('CUDA Device Capability:', torch.cuda.get_device_capability(0))
+    # Quick tensor test on A100
+    x = torch.randn(1000, 1000, device='cuda')
+    y = x @ x
+    print('A100 Tensor Matmul Test: SUCCESS')
+print('==============================================')
 "
 
-# 6. Run Phase 1 Verification Tests
-echo "[5/5] Running Phase 1 Foundation Verification..."
+# 7. Run Phase 1 Verification Tests
+echo "Running Phase 1 Foundation Verification Suite..."
 $ENV_PYTHON phase1_foundation/run_phase1_verification.py
 
 echo "=========================================================="
