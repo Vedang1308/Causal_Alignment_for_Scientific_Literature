@@ -76,3 +76,4 @@ class AbstentionGate:
                 return True, reason, RelationType.INSUFFICIENT_COMPARABILITY
 
         return False, None, predicted_relation
+

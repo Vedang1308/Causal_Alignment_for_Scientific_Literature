@@ -157,3 +157,4 @@ class CertificateBuilder:
             evidence_spans_b=spans_b,
             gap_explained_fraction=float(explained_fraction),
         )
+

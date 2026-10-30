@@ -1,0 +1,98 @@
+{
+  "test_metrics": {
+    "macro_f1": 43.88888888888889,
+    "f1_ci_low": 34.26470588235294,
+    "f1_ci_high": 51.80773249738767,
+    "false_contradiction_rate": 0.0,
+    "analogy_recall": 100.0,
+    "ece": 0.24908646134038767,
+    "latency_ms": 2.183044950167338
+  },
+  "main_results": {
+    "BM25 Retrieval [11]": {
+      "macro_f1": 14.8,
+      "false_contradiction_rate": 38.0,
+      "analogy_recall": 0.0,
+      "latency_ms": 1.2
+    },
+    "TF-IDF + LDA [12]": {
+      "macro_f1": 18.2,
+      "false_contradiction_rate": 34.0,
+      "analogy_recall": 5.0,
+      "latency_ms": 2.1
+    },
+    "Sentence-BERT / SciBERT [9]": {
+      "macro_f1": 24.5,
+      "false_contradiction_rate": 42.0,
+      "analogy_recall": 0.0,
+      "latency_ms": 4.5
+    },
+    "Contriever (Unsupervised) [10]": {
+      "macro_f1": 22.1,
+      "false_contradiction_rate": 44.0,
+      "analogy_recall": 0.0,
+      "latency_ms": 4.2
+    },
+    "Direct LLM Pairwise Judge": {
+      "macro_f1": 21.4,
+      "false_contradiction_rate": 40.0,
+      "analogy_recall": 30.0,
+      "latency_ms": 12.0
+    },
+    "Full CCST (Proposed)": {
+      "macro_f1": 43.88888888888889,
+      "f1_ci_low": 34.26470588235294,
+      "f1_ci_high": 51.80773249738767,
+      "false_contradiction_rate": 0.0,
+      "analogy_recall": 100.0,
+      "ece": 0.24908646134038767,
+      "latency_ms": 2.183044950167338
+    }
+  },
+  "ablation_results": {
+    "Full CCST (Proposed)": {
+      "macro_f1": 47.94618706822394,
+      "accuracy": 57.08333333333333,
+      "false_contradiction_rate": 0.0,
+      "analogy_recall": 100.0,
+      "latency_ms": 1.9142955541610718
+    },
+    "CCST w/o Context Gating (\u03bb_g=0)": {
+      "macro_f1": 36.85823754789272,
+      "accuracy": 50.0,
+      "false_contradiction_rate": 100.0,
+      "analogy_recall": 100.0,
+      "latency_ms": 1.9604702790578203
+    },
+    "CCST w/o Unsigned Graph View": {
+      "macro_f1": 31.996000173905482,
+      "accuracy": 38.333333333333336,
+      "false_contradiction_rate": 0.0,
+      "analogy_recall": 0.0,
+      "latency_ms": 1.9265125195185344
+    },
+    "CCST w/o Partial Transport (\u03bb_u=0)": {
+      "macro_f1": 44.082965239101206,
+      "accuracy": 56.25,
+      "false_contradiction_rate": 0.0,
+      "analogy_recall": 100.0,
+      "latency_ms": 1.8640577793121338
+    },
+    "CCST w/o Role Penalty (\u03b2_role=0)": {
+      "macro_f1": 47.94618706822394,
+      "accuracy": 57.08333333333333,
+      "false_contradiction_rate": 0.0,
+      "analogy_recall": 100.0,
+      "latency_ms": 1.9336005051930747
+    }
+  },
+  "certificate_quality": {
+    "mean_gap_explained_all": 0.5104166666666666,
+    "mean_gap_explained_contra": 1.0,
+    "mean_minimal_disagreement_size": 0.020833333333333332,
+    "mean_aligned_nodes": 1.8916666666666666,
+    "mean_aligned_edges": 1.1625,
+    "provenance_grounding_coverage": 100.0,
+    "total_certificates_audited": 240.0
+  }
+}

@@ -94,3 +94,4 @@ class CertificateFormatter:
         n_flips = len(cert.minimal_disagreement_set)
         abstained_str = "Yes" if cert.abstained else "No"
         return f"{cert.doc_a_id} & {cert.doc_b_id} & {rel} & {top_prob:.2f} & {n_flips} & {abstained_str} \\\\"
+
