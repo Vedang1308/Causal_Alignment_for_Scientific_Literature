@@ -48,17 +48,19 @@ class TfidfLdaBaseline:
             from sklearn.cluster import KMeans
 
             # 1. TF-IDF
+            min_df_val = 2 if len(documents) >= 20 else 1
             self.vectorizer = TfidfVectorizer(
                 max_features=5000,
                 stop_words="english",
-                min_df=2,
+                min_df=min_df_val,
                 ngram_range=(1, 2),
             )
             self.tfidf_matrix = self.vectorizer.fit_transform(texts)
 
             # 2. LDA Topic Modeling
+            n_components = min(self.n_topics, max(2, len(documents) // 10 if len(documents) >= 20 else min(len(documents), self.n_topics)))
             self.lda_model = LatentDirichletAllocation(
-                n_components=min(self.n_topics, max(2, len(documents) // 10)),
+                n_components=n_components,
                 random_state=self.random_state,
                 learning_method="online",
                 max_iter=10,
@@ -66,7 +68,7 @@ class TfidfLdaBaseline:
             self.topic_distributions = self.lda_model.fit_transform(self.tfidf_matrix)
 
             # 3. K-Means Clustering on Topic Distributions
-            k = min(self.n_clusters, max(2, len(documents) // 20))
+            k = min(self.n_clusters, max(1, len(documents) // 20 if len(documents) >= 40 else min(len(documents), self.n_clusters)))
             self.kmeans_model = KMeans(n_clusters=k, random_state=self.random_state, n_init=10)
             self.cluster_labels = self.kmeans_model.fit_predict(self.topic_distributions)
 

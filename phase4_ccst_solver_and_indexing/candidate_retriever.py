@@ -161,3 +161,4 @@ class CandidateRetriever:
             k_mechanism=self.k_m,
             k_context=self.k_c,
         )
+

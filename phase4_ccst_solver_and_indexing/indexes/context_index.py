@@ -67,3 +67,4 @@ class ContextIndex:
         results = [(doc_id, float(s / max_score)) for doc_id, s in scores.items()]
         results.sort(key=lambda x: -x[1])
         return results[:top_k]
+

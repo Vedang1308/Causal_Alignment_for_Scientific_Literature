@@ -184,3 +184,4 @@ def compute_all_cost_matrices(
         "p1": p1,
         "p2": p2,
     }
+

@@ -126,3 +126,4 @@ class MechanismIndex:
 
         results.sort(key=lambda x: -x[1])
         return results[:top_k]
+

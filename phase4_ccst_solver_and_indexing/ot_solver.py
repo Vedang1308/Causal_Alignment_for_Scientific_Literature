@@ -380,3 +380,4 @@ class CCSTOptimalTransportSolver:
             unaligned_nodes_a=unaligned_a,
             unaligned_nodes_b=unaligned_b,
         )
+

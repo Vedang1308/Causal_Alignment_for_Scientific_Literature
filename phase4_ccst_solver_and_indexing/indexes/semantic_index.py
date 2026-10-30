@@ -81,3 +81,4 @@ class SemanticIndex:
                 top_indices = part[np.argsort(-sims[part])]
 
             return [(self.doc_ids[i], float(sims[i])) for i in top_indices]
+
