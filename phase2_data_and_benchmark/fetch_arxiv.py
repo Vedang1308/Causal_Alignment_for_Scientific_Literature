@@ -19,7 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from phase1_foundation.schemas import DocumentRecord
 
-ARXIV_API_URL = "http://export.arxiv.org/api/query"
+ARXIV_API_URL = "https://export.arxiv.org/api/query"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
 
 
@@ -119,7 +119,12 @@ def fetch_arxiv_records(
             "sortOrder": "descending",
         }
         url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(url, headers={"User-Agent": "CCST-Research-Agent/1.0"})
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (compatible; CCSTResearchBot/1.0; +mailto:vavaghad@asu.edu)"
+            },
+        )
 
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:

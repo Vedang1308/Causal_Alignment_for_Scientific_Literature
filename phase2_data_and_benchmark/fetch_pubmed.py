@@ -39,7 +39,10 @@ def search_pubmed_ids(query: str, max_records: int = 1000) -> List[str]:
         "sort": "pub_date",
     }
     url = f"{ESEARCH_URL}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"User-Agent": "CCST-Biomed-Agent/1.0"})
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; CCSTBiomedAgent/1.0; +mailto:vavaghad@asu.edu)"},
+    )
 
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
@@ -63,7 +66,10 @@ def fetch_pubmed_abstracts(pmids: List[str], batch_size: int = 100, delay_second
             "retmode": "xml",
         }
         url = f"{EFETCH_URL}?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(url, headers={"User-Agent": "CCST-Biomed-Agent/1.0"})
+        req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; CCSTBiomedAgent/1.0; +mailto:vavaghad@asu.edu)"},
+    )
 
         try:
             with urllib.request.urlopen(req, timeout=45) as resp:

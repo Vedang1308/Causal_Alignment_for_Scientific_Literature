@@ -9,7 +9,7 @@ networkx>=3.0.0
 # Deep Learning & Embeddings (A100 GPU compatible)
 torch>=2.1.0
 sentence-transformers>=2.2.2
-transformers>=4.35.0
+transformers>=4.35.0,<4.46.0
 accelerate>=0.25.0
 
 # Optimal Transport & Alignment

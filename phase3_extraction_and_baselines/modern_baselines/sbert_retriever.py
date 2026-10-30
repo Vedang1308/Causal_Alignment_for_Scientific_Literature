@@ -57,6 +57,7 @@ class SBERTRetriever:
             from sentence_transformers import SentenceTransformer
             print(f"Loading Sentence-BERT model '{self.model_name}' on {self.device}...")
             self.model = SentenceTransformer(self.model_name, device=self.device)
+            print(f"Loaded real Sentence-BERT weights successfully on device: {self.device}")
         except Exception as e:
             if self.use_mock_fallback:
                 if not SBERTRetriever._warned:

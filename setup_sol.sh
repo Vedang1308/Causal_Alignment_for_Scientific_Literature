@@ -90,16 +90,16 @@ fi
 # Ensure pip packages from requirements are installed
 echo "Ensuring all required pip packages are installed..."
 $ENV_PIP install --no-cache-dir \
-    pydantic>=2.5.0 \
-    sentence-transformers>=2.2.2 \
-    transformers>=4.35.0 \
-    accelerate>=0.25.0 \
-    rank-bm25>=0.2.2 \
-    faiss-cpu>=1.7.4 \
-    krippendorff>=0.6.0 \
-    requests>=2.31.0 \
-    tqdm>=4.66.0 \
-    pytest>=7.4.0 2>/dev/null || true
+    "pydantic>=2.5.0" \
+    "transformers>=4.35.0,<4.46.0" \
+    "sentence-transformers>=2.2.2" \
+    "accelerate>=0.25.0" \
+    "rank-bm25>=0.2.2" \
+    "faiss-cpu>=1.7.4" \
+    "krippendorff>=0.6.0" \
+    "requests>=2.31.0" \
+    "tqdm>=4.66.0" \
+    "pytest>=7.4.0" 2>/dev/null || true
 
 # 6. Verify PyTorch and CUDA availability on NVIDIA A100
 echo "[5/5] Verifying PyTorch and CUDA acceleration on A100..."
