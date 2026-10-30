@@ -49,11 +49,10 @@ htmlcov/
 *.swp
 *.swo
 
-# Project Data & Artifacts (keep large files out of git)
+# Project Data & Artifacts
+# Ignore large scratch/raw dumps, but keep frozen corpus and benchmark
 data/raw/*
 !data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
 data/cache/*
 !data/cache/.gitkeep
 checkpoints/

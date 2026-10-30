@@ -1,0 +1,15 @@
+{
+  "total_documents": 2000,
+  "domain_breakdown": {
+    "biomedical": 524,
+    "computer_security": 486,
+    "control_systems": 484,
+    "networking": 506
+  },
+  "abstract_word_count": {
+    "min": 53,
+    "max": 88,
+    "mean": 66.5
+  },
+  "target_frozen_file": "corpus.jsonl"
+}

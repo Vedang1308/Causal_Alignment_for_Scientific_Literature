@@ -1,0 +1,16 @@
+{
+  "total_pairs": 240,
+  "strata_breakdown": {
+    "stratum_1_controlled": 60,
+    "stratum_2_analogies": 60,
+    "stratum_3_natural": 60,
+    "stratum_4_adversarial": 60
+  },
+  "relation_distribution": {
+    "agreement": 50,
+    "contradiction_candidate": 50,
+    "contextual_heterogeneity": 50,
+    "cross_domain_analogy": 60,
+    "insufficient_comparability": 30
+  }
+}
