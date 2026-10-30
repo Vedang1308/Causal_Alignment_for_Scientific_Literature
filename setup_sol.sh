@@ -84,3 +84,4 @@ python phase1_foundation/run_phase1_verification.py
 echo "=========================================================="
 echo " Phase 1 Environment & Schemas Setup Successfully on SOL!"
 echo "=========================================================="
+

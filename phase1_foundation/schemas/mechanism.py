@@ -131,3 +131,4 @@ class MechanismClaim(BaseModel):
             f"[{self.population}] {self.intervention} --({sign_str})--> "
             f"{self.outcome}{meds} (status: {self.epistemic_status.value})"
         )
+

@@ -92,3 +92,4 @@ class BenchmarkPair(BaseModel):
         description="True if context conditions are materially compatible; False if shifted; None if unknown"
     )
     notes: Optional[str] = Field(default=None, description="Curator notes or rationale")
+

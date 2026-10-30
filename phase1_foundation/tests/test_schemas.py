@@ -257,3 +257,4 @@ def test_benchmark_pair_validation():
     assert pair.stratum == StratumType.STRATUM_3_NATURAL
     assert len(pair.annotations) == 3
     assert pair.expected_context_compatible is False
+

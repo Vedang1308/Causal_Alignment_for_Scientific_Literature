@@ -27,3 +27,4 @@ phase5_classification_and_certificates/
 ├── certificate_builder.py   # Generates human/machine readable certificate
 └── formatter.py             # Markdown, JSON, and LaTeX certificate exporters
 ```
+

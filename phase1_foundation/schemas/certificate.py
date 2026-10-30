@@ -146,3 +146,4 @@ class DisagreementCertificate(BaseModel):
             lines.append(f"> \"{s.text}\" (chars {s.start_char}-{s.end_char})")
 
         return "\n".join(lines)
+

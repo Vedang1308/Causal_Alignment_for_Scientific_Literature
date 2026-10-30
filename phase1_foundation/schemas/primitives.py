@@ -133,3 +133,4 @@ class ProvenanceSpan(BaseModel):
         if v < start:
             raise ValueError(f"end_char ({v}) cannot be less than start_char ({start})")
         return v
+
