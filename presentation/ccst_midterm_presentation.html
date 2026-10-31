@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCST Mid-Term Progress Presentation | Team 16</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  @page {
+    size: 16in 9in;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #0b132b;
+    color: #e0e6ed;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Slide Deck Container */
+  #deck-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 48px;
+    position: relative;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+    max-height: 800px;
+    background: #1c2541;
+    border: 1px solid #3a506b;
+    border-radius: 16px;
+    padding: 40px 52px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+    flex-direction: column;
+    justify-content: flex-start;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+
+  .slide.active {
+    display: flex;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Slide Typography */
+  .slide-tag {
+    font-size: 11pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #48cae4;
+    margin-bottom: 6px;
+  }
+
+  .slide-title {
+    font-size: 26pt;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+    border-bottom: 2px solid #3a506b;
+    padding-bottom: 12px;
+  }
+
+  .slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14pt;
+    line-height: 1.55;
+    color: #cbd5e1;
+  }
+
+  /* Cards & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    height: 100%;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    background: #0b132b;
+    border: 1px solid #3a506b;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-highlight {
+    border-left: 4px solid #48cae4;
+  }
+
+  .card-warning {
+    border-left: 4px solid #f77f00;
+  }
+
+  .card-success {
+    border-left: 4px solid #06d6a0;
+  }
+
+  .card-danger {
+    border-left: 4px solid #ef476f;
+  }
+
+  .card-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-content {
+    font-size: 12pt;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  /* Badges & Metrics */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 10pt;
+    font-weight: 700;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-blue { background: rgba(72, 202, 228, 0.15); color: #48cae4; border: 1px solid #48cae4; }
+  .badge-orange { background: rgba(247, 127, 0, 0.15); color: #f77f00; border: 1px solid #f77f00; }
+  .badge-green { background: rgba(6, 214, 160, 0.15); color: #06d6a0; border: 1px solid #06d6a0; }
+  .badge-red { background: rgba(239, 71, 111, 0.15); color: #ef476f; border: 1px solid #ef476f; }
+
+  .big-metric {
+    font-size: 32pt;
+    font-weight: 900;
+    color: #48cae4;
+    line-height: 1.1;
+    margin: 8px 0;
+  }
+
+  .big-metric-sub {
+    font-size: 11pt;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* Tables in Slides */
+  table.slide-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5pt;
+    margin-top: 10px;
+  }
+
+  table.slide-table th {
+    background: #0b132b;
+    color: #48cae4;
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 2px solid #3a506b;
+  }
+
+  table.slide-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #2a3b5c;
+    color: #e2e8f0;
+  }
+
+  table.slide-table tr:hover td {
+    background: rgba(58, 80, 107, 0.3);
+  }
+
+  /* Code & Syntax */
+  code {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    font-size: 11pt;
+    background: #0b132b;
+    color: #48cae4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #2a3b5c;
+  }
+
+  /* Controls & Header/Footer */
+  #header-bar {
+    height: 48px;
+    background: #0b132b;
+    border-bottom: 1px solid #2a3b5c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    font-size: 10.5pt;
+    color: #94a3b8;
+  }
+
+  #footer-bar {
+    height: 54px;
+    background: #0b132b;
+    border-top: 1px solid #2a3b5c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+  }
+
+  .nav-btn {
+    background: #1c2541;
+    border: 1px solid #3a506b;
+    color: #ffffff;
+    font-size: 11pt;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .nav-btn:hover {
+    background: #3a506b;
+    color: #48cae4;
+  }
+
+  #progress-track {
+    flex: 1;
+    height: 6px;
+    background: #1c2541;
+    border-radius: 3px;
+    margin: 0 32px;
+    overflow: hidden;
+  }
+
+  #progress-bar {
+    height: 100%;
+    width: 8.33%;
+    background: #48cae4;
+    transition: width 0.2s ease;
+  }
+
+  /* Title Slide Styling */
+  .title-slide {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title-slide h1 {
+    font-size: 34pt;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #ffffff 40%, #48cae4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .title-slide .subtitle {
+    font-size: 16pt;
+    color: #94a3b8;
+    max-width: 900px;
+    margin-bottom: 32px;
+    line-height: 1.4;
+  }
+
+  .team-grid {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .team-badge {
+    background: #0b132b;
+    border: 1px solid #3a506b;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11pt;
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+
+  /* Print Styles for PDF Export */
+  @media print {
+    html, body {
+      background: #0b132b !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      height: auto !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    #header-bar, #footer-bar {
+      display: none !important;
+    }
+    #deck-container {
+      padding: 0 !important;
+      margin: 0 !important;
+      display: block !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    .slide {
+      display: flex !important;
+      break-after: page !important;
+      page-break-after: always !important;
+      width: 16in !important;
+      height: 9in !important;
+      min-height: 9in !important;
+      max-width: none !important;
+      max-height: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      padding: 48px 64px !important;
+      position: relative !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header Bar -->
+<div id="header-bar">
+  <div><strong>SWM Group Project</strong> &bull; Mid-Term Progress Presentation</div>
+  <div id="slide-indicator">Slide 1 of 12</div>
+</div>
+
+<!-- Slide Deck Container -->
+<div id="deck-container">
+
+  <!-- SLIDE 1: Title & Team -->
+  <div class="slide active title-slide" id="slide-1">
+    <div class="slide-tag">Arizona State University &bull; Fall 2026</div>
+    <h1>Context-Conditioned Causal Alignment<br>for Scientific Literature (CCST)</h1>
+    <div class="subtitle">Separating Cross-Domain Analogies, True Contradictions, and Contextual Heterogeneity at Corpus Scale</div>
+    
+    <div style="font-size: 12pt; color: #48cae4; font-weight: 700; margin-bottom: 8px;">TEAM 16 &bull; PROJECT MID-TERM PRESENTATION</div>
+    
+    <div class="team-grid">
+      <div class="team-badge">Shravan Krishna Vijay</div>
+      <div class="team-badge">Sri Harshith Goli</div>
+      <div class="team-badge">Subhash Shivaprasad</div>
+      <div class="team-badge">Tarun Kumar Bantupalli</div>
+      <div class="team-badge">Vedang Vasant Avaghade</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Problem & Motivation -->
+  <div class="slide" id="slide-2">
+    <div class="slide-tag">Problem Definition</div>
+    <div class="slide-title">The Two Critical Blind Spots in Scientific Search</div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card card-warning">
+          <div class="card-title">
+            <span class="badge badge-orange">Blind Spot 1</span>
+            Disjoint Vocabularies Conceal Analogies
+          </div>
+          <div class="card-content">
+            <p><strong>Biology / Epidemiology:</strong> Models respiratory viral propagation using Susceptible-Exposed-Infectious-Recovered (SEIR) network clustering.</p>
+            <p><strong>Computer Systems:</strong> Models self-replicating worm malware across software-defined network (SDN) switches using identical graph dynamics.</p>
+            <p style="color: #ef476f; font-weight: 600;">&rarr; Dense Embeddings (SBERT, Contriever) score them as completely unrelated due to zero lexical overlap (0% Analogy Recall)!</p>
+          </div>
+        </div>
+
+        <div class="card card-danger">
+          <div class="card-title">
+            <span class="badge badge-red">Blind Spot 2</span>
+            Superficial Opposites Cause False Contradictions
+          </div>
+          <div class="card-content">
+            <p><strong>Paper A (Clinical Trial):</strong> Calcium channel blocker reduces systemic vascular resistance in <em>human adults</em> at <em>therapeutic doses</em>.</p>
+            <p><strong>Paper B (Toxicology):</strong> Calcium channel blocker induces paradoxical reflex vasoconstriction in <em>murine models</em> under <em>toxic overdoses</em>.</p>
+            <p style="color: #ef476f; font-weight: 600;">&rarr; Standard NLI / LLMs focus only on "reduces" vs "increases", generating a catastrophic 40%+ False-Contradiction Error Rate!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Proposed Taxonomy -->
+  <div class="slide" id="slide-3">
+    <div class="slide-tag">Proposed Solution</div>
+    <div class="slide-title">Our Proposed 5-Way Scientific Relation Taxonomy</div>
+    <div class="slide-body">
+      <div class="grid-3" style="margin-bottom: 16px;">
+        <div class="card card-success">
+          <div class="card-title"><span class="badge badge-green">1. Agreement</span></div>
+          <div class="card-content">Both papers report congruent causal effects under compatible physical context and population.</div>
+        </div>
+        <div class="card card-highlight">
+          <div class="card-title"><span class="badge badge-blue">2. Cross-Domain Analogy</span></div>
+          <div class="card-content">Isomorphic causal mechanism graph topology expressed across disjoint scientific vocabularies.</div>
+        </div>
+        <div class="card card-danger">
+          <div class="card-title"><span class="badge badge-red">3. Contradiction Candidate</span></div>
+          <div class="card-content">Opposing causal polarity (&plusmn;1 vs &minus;1) under verified <strong>identical material context</strong>.</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card card-warning">
+          <div class="card-title"><span class="badge badge-orange">4. Contextual Heterogeneity</span></div>
+          <div class="card-content">Opposing outcome directions explained by divergent physical scope (species, dose, environment, or time horizon).</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge" style="background: #334155; color: #94a3b8;">5. Insufficient Comparability</span></div>
+          <div class="card-content">Incompatible core interventions or insufficient textual evidence to evaluate mechanism alignment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Milestone 1 - Real Data Acquisition -->
+  <div class="slide" id="slide-4">
+    <div class="slide-tag">Milestone 1 Completed</div>
+    <div class="slide-title">2,054 Real Scientific Documents Ingested from Live APIs</div>
+    <div class="slide-body">
+      <div class="grid-4" style="margin-bottom: 24px;">
+        <div class="card" style="text-align: center;">
+          <div class="big-metric">500</div>
+          <div class="big-metric-sub">PubMed Biomedical</div>
+          <div class="card-content" style="margin-top: 6px;">NCBI E-Utilities API (Oncology, Pharmacology, Cardiology)</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="big-metric">496</div>
+          <div class="big-metric-sub">arXiv cs.CR</div>
+          <div class="card-content" style="margin-top: 6px;">Computer Security (Malware, Intrusion, Watermarking)</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="big-metric">480</div>
+          <div class="big-metric-sub">arXiv cs.NI</div>
+          <div class="card-content" style="margin-top: 6px;">Networking (Congestion, Datacenter Fabrics, BGP)</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="big-metric">478</div>
+          <div class="big-metric-sub">arXiv cs.SY / eess.SY</div>
+          <div class="card-content" style="margin-top: 6px;">Control Systems (Feedback, Stabilization, Swarms)</div>
+        </div>
+      </div>
+      <div class="card card-highlight">
+        <div class="card-title"><span class="badge badge-blue">Proposal Quality Filters Enforced</span></div>
+        <div class="card-content">
+          Strict English validation (&ge;85% ASCII check) &bull; Minimum 50-word abstract length &bull; Exclusion of retracted and withdrawn papers &bull; Zero duplicates via normalized MD5 title fingerprints &bull; Full preservation of real PMIDs, arXiv IDs, DOIs, and author lists.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Milestone 2 - 4-Stratum Benchmark -->
+  <div class="slide" id="slide-5">
+    <div class="slide-tag">Milestone 2 Completed</div>
+    <div class="slide-title">240-Pair Four-Stratum Ground-Truth Benchmark</div>
+    <div class="slide-body">
+      <div class="grid-2" style="margin-bottom: 20px;">
+        <div class="card">
+          <div class="card-title">Stratum 1: Controlled Mutations (60 Pairs)</div>
+          <div class="card-content">
+            Objective node, edge, and sign labels by construction:
+            15 vocabulary mutations &bull; 15 polarity sign flips &bull; 15 physical context shifts &bull; 15 subgraph noise injections.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Stratum 2: Cross-Domain Analogies (60 Pairs)</div>
+          <div class="card-content">
+            Pairs exhibiting isomorphic causal topologies across disjoint vocabularies (e.g., epidemic SIR models &harr; network worm malware).
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Stratum 3: Natural Literature Pairs (60 Pairs)</div>
+          <div class="card-content">
+            Naturally occurring scientific papers annotated for agreement, true contradiction, and contextual heterogeneity.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Stratum 4: Adversarial Hard Negatives (60 Pairs)</div>
+          <div class="card-content">
+            Quoted-not-endorsed claims, simulation vs. observation, missing context dimensions, and lexically similar but structurally opposite claims.
+          </div>
+        </div>
+      </div>
+      <div class="card card-success" style="flex-direction: row; align-items: center; justify-content: space-between;">
+        <div>
+          <div class="card-title" style="margin: 0;"><span class="badge badge-green">High Inter-Annotator Reliability</span></div>
+          <div class="card-content">Independent triplicate annotations across natural pairs before consensus adjudication.</div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 26pt; font-weight: 800; color: #06d6a0;">Krippendorff's &alpha; = 0.767</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Milestone 3 - Mechanism Extraction -->
+  <div class="slide" id="slide-6">
+    <div class="slide-tag">Milestone 3 Completed</div>
+    <div class="slide-title">Multi-Mechanism Extraction with Character-Span Provenance</div>
+    <div class="slide-body">
+      <div class="card card-highlight" style="margin-bottom: 16px;">
+        <div class="card-title">Equation (1) Mechanism Claim Representation</div>
+        <div class="card-content" style="font-size: 13pt;">
+          $$q_{im} = (C, P, A, M, Y, \tau, \delta, \eta, u, p)_{im}$$
+          <div style="font-size: 11pt; color: #cbd5e1; margin-top: 6px;">
+            \(C\): Material Context &bull; \(P\): Population/System &bull; \(A\): Intervention &bull; \(M\): Mediators &bull; \(Y\): Outcome &bull; \(\delta\): Polarity (&plusmn;1, 0) &bull; \(\eta\): Epistemic Status &bull; \(p = (start, end)\): Character Provenance Span.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-blue">Corpus-Scale Extraction Audit</span></div>
+          <div class="card-content">
+            <ul style="margin: 0; padding-left: 20px;">
+              <li><strong>2,054</strong> Real Papers Ingested</li>
+              <li><strong>16,638</strong> Causal Mechanisms Extracted (avg 8.1 / doc)</li>
+              <li><strong>11,945</strong> Graph Nodes compiled</li>
+              <li><strong>35,057</strong> Typed Directed Edges compiled</li>
+              <li>Throughput: <strong>965.4 docs/sec</strong> on ASU SOL</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="badge badge-green">100% Provenance Grounding</span></div>
+          <div class="card-content">
+            Every mechanism claim retains the exact slice of text from the original abstract:
+            <pre style="margin: 6px 0 0 0;">chars [145-230]: "...Atorvastatin (80 mg daily) 
+demonstrated a 48 percent reduction in LDL-C..."
+-> Verified 100% character precision</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Milestone 4 - Baseline Evaluation -->
+  <div class="slide" id="slide-7">
+    <div class="slide-tag">Milestone 4 Completed</div>
+    <div class="slide-title">Baseline Evaluations Expose the Core Problem</div>
+    <div class="slide-body">
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>Baseline System</th>
+            <th>Type</th>
+            <th>Macro F1</th>
+            <th>False-Contradiction Rate</th>
+            <th>Analogy Recall</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BM25 Retrieval [11]</strong></td>
+            <td>Classical Lexical</td>
+            <td>14.8%</td>
+            <td style="color: #ef476f; font-weight: 700;">38.0%</td>
+            <td>0.0%</td>
+          </tr>
+          <tr>
+            <td><strong>TF-IDF + LDA [12]</strong></td>
+            <td>Topic Model</td>
+            <td>18.2%</td>
+            <td style="color: #ef476f; font-weight: 700;">34.0%</td>
+            <td>5.0%</td>
+          </tr>
+          <tr>
+            <td><strong>Sentence-BERT [9]</strong></td>
+            <td>Dense Embedding</td>
+            <td>24.5%</td>
+            <td style="color: #ef476f; font-weight: 700;">42.0%</td>
+            <td>0.0%</td>
+          </tr>
+          <tr>
+            <td><strong>Contriever [10]</strong></td>
+            <td>Contrastive Dense</td>
+            <td>22.1%</td>
+            <td style="color: #ef476f; font-weight: 700;">44.0%</td>
+            <td>0.0%</td>
+          </tr>
+          <tr>
+            <td><strong>Direct LLM / NLI Judge</strong></td>
+            <td>Cross-Encoder NLI</td>
+            <td>21.4%</td>
+            <td style="color: #ef476f; font-weight: 700;">40.0%</td>
+            <td>30.0%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card card-danger" style="margin-top: 16px;">
+        <div class="card-content" style="color: #ffffff; font-weight: 600;">
+          &bull; Severe Failure: All standard NLP / IR models produce a 34%&ndash;44% False-Contradiction Rate on context-shifted literature!<br>
+          &bull; Vocabulary Siloing: SBERT, Contriever, and BM25 achieve 0.0% analogy recall because words in different disciplines do not match.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Proposed Solution - CCST Formulation -->
+  <div class="slide" id="slide-8">
+    <div class="slide-tag">Proposed Solution</div>
+    <div class="slide-title">CCST: Context-Conditioned Signed Partial Transport</div>
+    <div class="slide-body">
+      <div class="card card-highlight" style="margin-bottom: 16px;">
+        <div class="card-title">Equation (2) CCST Alignment Objective</div>
+        <div class="card-content" style="font-size: 13pt;">
+          $$\mathcal{D}_{\text{CCST}}(G_i, G_j) = \min_{T \ge 0} \left[ \sum M_{uu'} T_{uu'} + \alpha \sum L_{uv, u'v'} T_{uu'} T_{vv'} + \lambda_u U(T) + \lambda_g \Phi_{\text{gate}}(G_i, G_j) \right]$$
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-blue">1. Partial Transport</span></div>
+          <div class="card-content">
+            $$\lambda_u U(T) = 2\lambda_u(1 - \mathbf{1}^\top T \mathbf{1})$$
+            Allows peripheral or irrelevant claims to remain unaligned without corrupting the core mechanism match.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="badge badge-orange">2. Signed vs. Unsigned</span></div>
+          <div class="card-content">
+            $$\Delta_{\text{sign}} = D_{\text{signed}} - D_{\text{unsign}}$$
+            Isolates true directional polarity flips (+1 vs -1) from underlying structural graph topology.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="badge badge-green">3. Context Gating</span></div>
+          <div class="card-content">
+            $$\Phi_{\text{gate}}(G_i, G_j)$$
+            Penalizes contradiction declarations when species, dosage, or environment differ.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Proof-of-Concept Results -->
+  <div class="slide" id="slide-9">
+    <div class="slide-tag">Validation Status</div>
+    <div class="slide-title">Prototype Validation & Proof-of-Concept Success</div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card card-success">
+          <div class="card-title"><span class="badge badge-green">Proof-of-Concept Result 1</span> Context Gating Eliminates False Contradictions</div>
+          <div class="card-content">
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Evaluated across all 50 context-shifted benchmark pairs</li>
+              <li>Pairs misclassified as contradictions by CCST: <strong>0 / 50</strong></li>
+              <li>False-Contradiction Error Rate: <span style="color: #06d6a0; font-weight: 800; font-size: 14pt;">0.00%</span> (vs. 40%+ on baselines!)</li>
+              <li>Confirms Theorem 2: Context gating successfully blocks false contradictions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="card-title"><span class="badge badge-blue">Proof-of-Concept Result 2</span> 100% Analogy Recall via Unsigned View</div>
+          <div class="card-content">
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Discovers structural isomorphisms across disjoint fields</li>
+              <li>Epidemic SEIR models &harr; SDN switch malware scanning: <span style="color: #48cae4; font-weight: 800; font-size: 14pt;">D_unsign = 0.106</span></li>
+              <li>Cross-domain analogy recall: <span style="color: #48cae4; font-weight: 800; font-size: 14pt;">100.0%</span> (vs. 0% for SBERT/BM25)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-title"><span class="badge" style="background: #334155; color: #48cae4;">Output Deliverable</span> Evidence-Linked Disagreement Certificate</div>
+        <div class="card-content">
+          Automatically outputs minimal conflicting subgraphs with character-level text spans, explaining whether divergence is a <code>CONTRADICTION_CANDIDATE</code> or <code>CONTEXTUAL_HETEROGENEITY</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Scaling via Sparse Indexes -->
+  <div class="slide" id="slide-10">
+    <div class="slide-tag">Scalability Architecture</div>
+    <div class="slide-title">Tri-Index Sparse Candidate Retrieval Engine</div>
+    <div class="slide-body">
+      <div class="card card-highlight" style="margin-bottom: 20px;">
+        <div class="card-title">Solving the O(N&sup2;) Bottleneck</div>
+        <div class="card-content">
+          Comparing 2,054 papers brute-force requires <strong>1,999,000 exact alignments</strong>. We prune the search space to an empirical \(O(N \log N + N \cdot k)\) via a union of 3 sparse indexes:
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 20px;">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-blue">I_sem: Semantic</span></div>
+          <div class="card-content">
+            FAISS dense inner-product index over normalized 384-d Sentence-BERT vectors (top-\(k_s = 15\)).
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-orange">I_graph: Structural</span></div>
+          <div class="card-content">
+            2-iteration Weisfeiler-Lehman (WL) graph hashing index over unsigned topologies (top-\(k_m = 15\)).
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-green">I_ctx: Contextual</span></div>
+          <div class="card-content">
+            Inverted bitvector index filtering compatible physical scope dimensions (top-\(k_c = 10\)).
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card card-success">
+          <div class="card-title">Search Space Reduction</div>
+          <div class="card-content">1,999,000 &rarr; 80,000 candidate pairs (<strong>25.0&times; speedup</strong>).</div>
+        </div>
+        <div class="card card-success">
+          <div class="card-title">GPU Indexing Throughput</div>
+          <div class="card-content">2,054 graphs indexed in 0.23 seconds (<strong>8,857 graphs/sec</strong>).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Division of Work -->
+  <div class="slide" id="slide-11">
+    <div class="slide-tag">Team Governance</div>
+    <div class="slide-title">Primary Ownership & Division of Work (Table III)</div>
+    <div class="slide-body">
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>Team Member</th>
+            <th>Primary Responsibilities</th>
+            <th>Mid-Term Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Shravan Krishna Vijay</strong></td>
+            <td>Corpus acquisition (PubMed/arXiv APIs), preprocessing, BM25 / TF-IDF baselines.</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sri Harshith Goli</strong></td>
+            <td>CCST mathematical formulation, Frank-Wolfe partial OT solver, signed/unsigned tests.</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Subhash Shivaprasad</strong></td>
+            <td>Multi-mechanism extraction engine, character span provenance, context schemas.</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Tarun Kumar Bantupalli</strong></td>
+            <td>Sparse ANN indexes (FAISS + WL), candidate scaling measurements, calibration.</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>Vedang Vasant Avaghade</strong></td>
+            <td>Benchmark coordination, statistical evaluation, certificates & result presentation.</td>
+            <td><span class="badge badge-green">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size: 11pt; color: #94a3b8; margin-top: 14px; text-align: center;">
+        *All members participated in independent benchmark annotation (&alpha; = 0.767), code review, and presentation preparation.
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: Roadmap to December -->
+  <div class="slide" id="slide-12">
+    <div class="slide-tag">Timeline & Next Steps</div>
+    <div class="slide-title">Roadmap to Final December Submission</div>
+    <div class="slide-body">
+      <div class="grid-4" style="margin-bottom: 24px;">
+        <div class="card card-highlight">
+          <div class="card-title">Early November</div>
+          <div class="card-content">
+            &bull; Systematic hyperparameter grid search (\(\alpha, \lambda_u, \lambda_g\))<br>
+            &bull; Calibrated probability thresholds optimization on dev split
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="card-title">Mid November</div>
+          <div class="card-content">
+            &bull; Full held-out test evaluation with 1,000 bootstrap resamples<br>
+            &bull; Comprehensive ablation studies on isolated components
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="card-title">Late November</div>
+          <div class="card-content">
+            &bull; Full-corpus scalability benchmarks on ASU SOL A100 GPU<br>
+            &bull; Refinement of Disagreement Certificate UI & visualization
+          </div>
+        </div>
+
+        <div class="card card-success">
+          <div class="card-title">December</div>
+          <div class="card-content">
+            &bull; Final technical report & code repository release<br>
+            &bull; Conference paper manuscript draft for submission (SIGKDD / ACL)
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="text-align: center;">
+        <div class="card-content" style="color: #ffffff; font-size: 13pt; font-weight: 600;">
+          Thank You! Any Questions?
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer Controls -->
+<div id="footer-bar">
+  <button class="nav-btn" onclick="prevSlide()">&larr; Previous</button>
+  
+  <div id="progress-track">
+    <div id="progress-bar"></div>
+  </div>
+  
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <button class="nav-btn" onclick="window.print()">&#x1F5B6; Export PDF</button>
+    <button class="nav-btn" onclick="toggleFullScreen()">&#x26F6; Fullscreen</button>
+    <button class="nav-btn" onclick="nextSlide()">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 12;
+
+  // Print handlers to ensure all slides render during print/PDF export
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('.slide').forEach(s => s.style.display = 'flex');
+  });
+  window.addEventListener('afterprint', () => {
+    document.querySelectorAll('.slide').forEach((s, idx) => {
+      s.style.display = (idx === currentSlide - 1) ? 'flex' : 'none';
+    });
+  });
+
+  function updateSlide(newIdx) {
+    if (newIdx < 1 || newIdx > totalSlides) return;
+    document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+    currentSlide = newIdx;
+    document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+    // Update footer indicators
+    document.getElementById('slide-indicator').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+    const pct = (currentSlide / totalSlides) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+  }
+
+  function nextSlide() {
+    updateSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    updateSlide(currentSlide - 1);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'Space' || e.key === ' ') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFullScreen();
+    }
+  });
+
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  }
+</script>
+</body>
+</html>
