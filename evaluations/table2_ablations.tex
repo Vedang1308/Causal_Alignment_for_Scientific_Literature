@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Ablation studies validating each component of the CCST architecture.}
+\label{tab:ablations}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Ablation Configuration} & \textbf{Macro F1 (\%)} & \textbf{False-Contradiction (\%)} & \textbf{Analogy Recall (\%)} \\
+\midrule
+\textbf{Full CCST (Proposed)} & \textbf{47.9} & \textbf{0.0} & \textbf{100.0} \\
+CCST w/o Context Gating (λ_g=0) & 36.9 & 100.0 & 100.0 \\
+CCST w/o Unsigned Graph View & 32.0 & 0.0 & 0.0 \\
+CCST w/o Partial Transport (λ_u=0) & 44.1 & 0.0 & 100.0 \\
+CCST w/o Role Penalty (β_role=0) & 47.9 & 0.0 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}

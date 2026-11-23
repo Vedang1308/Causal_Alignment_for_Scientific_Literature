@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCST Interactive Causal Alignment & Disagreement Certificate Demo</title>
+<style>
+  :root {
+    --bg-dark: #0b1120;
+    --bg-panel: #131c31;
+    --bg-card: #1e293b;
+    --bg-card-hover: #27354f;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #38bdf8;
+    --accent-indigo: #818cf8;
+    --accent-purple: #c084fc;
+    --accent-green: #34d399;
+    --accent-red: #f87171;
+    --accent-amber: #fbbf24;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+  }
+  .header-left h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header-left p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  .header-badges {
+    display: flex;
+    gap: 10px;
+  }
+  .badge {
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-primary { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); border: 1px solid rgba(56, 189, 248, 0.4); }
+  .badge-success { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border: 1px solid rgba(52, 211, 153, 0.4); }
+  .badge-warn { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.4); }
+
+  /* Layout */
+  .demo-container {
+    display: grid;
+    grid-template-columns: 320px 1fr 340px;
+    gap: 20px;
+  }
+
+  /* Left Panel: Controls & Presets */
+  .control-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .panel-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .preset-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .preset-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-blue);
+  }
+  .preset-btn.active {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+  }
+  .preset-btn .preset-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+  }
+  .preset-btn .preset-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .preset-tag {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .tag-contra { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+  .tag-analogy { background: rgba(192, 132, 252, 0.2); color: var(--accent-purple); }
+  .tag-context { background: rgba(251, 191, 36, 0.2); color: var(--accent-amber); }
+  .tag-agree { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+
+  /* Sliders */
+  .param-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .param-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+  .param-value {
+    font-family: var(--font-mono);
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+  }
+
+  /* Center Stage: Causal Graph Alignment Canvas */
+  .canvas-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .view-toggles {
+    display: flex;
+    gap: 8px;
+  }
+  .view-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .view-btn.active {
+    background: var(--accent-blue);
+    color: #0b1120;
+    font-weight: 600;
+    border-color: var(--accent-blue);
+  }
+
+  .graph-canvas-container {
+    background: #090e1a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+  }
+  svg.alignment-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Document Cards below graph */
+  .docs-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .doc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .doc-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .doc-text {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .highlight-span {
+    background: rgba(56, 189, 248, 0.25);
+    color: #e0f2fe;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border-bottom: 2px solid var(--accent-blue);
+  }
+  .highlight-contra {
+    background: rgba(248, 113, 113, 0.3);
+    color: #fee2e2;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border-bottom: 2px solid var(--accent-red);
+  }
+
+  /* Right Panel: Output & Certificate */
+  .output-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Prediction Banner */
+  .prediction-banner {
+    background: var(--bg-card);
+    border: 2px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .prediction-banner.contra {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 15px rgba(248, 113, 113, 0.25);
+  }
+  .prediction-banner.analogy {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.25);
+  }
+  .prediction-banner.context {
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
+  }
+  .prediction-banner.agree {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.25);
+  }
+  .pred-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .pred-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 4px 0;
+  }
+  .pred-conf {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+
+  /* Probability Bars */
+  .prob-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .prob-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .prob-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+  }
+  .prob-name { color: var(--text-secondary); }
+  .prob-num { font-family: var(--font-mono); font-weight: 600; }
+  .prob-bar-bg {
+    height: 7px;
+    background: #0f172a;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .prob-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  /* Context Scope Table */
+  .scope-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+  }
+  .scope-table th {
+    text-align: left;
+    color: var(--text-muted);
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .scope-table td {
+    padding: 5px 6px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  }
+  .status-compat { color: var(--accent-green); font-weight: 600; }
+  .status-conflict { color: var(--accent-red); font-weight: 600; }
+  .status-unspec { color: var(--text-muted); }
+
+  /* Certificate Box */
+  .cert-box {
+    background: #080d1a;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #cbd5e1;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .cert-header {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  footer a { color: var(--accent-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>CCST Causal Alignment & Verification Engine</h1>
+    <p>Live Demo Interface: Separating Cross-Domain Analogies, True Contradictions, and Contextual Heterogeneity</p>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-primary">ASU SWM Group 16</span>
+    <span class="badge badge-success">ASU SOL A100 (5.77ms)</span>
+    <span class="badge badge-warn">Krippendorff α = 0.767</span>
+  </div>
+</header>
+
+<div class="demo-container">
+
+  <!-- LEFT COLUMN: CONTROLS & TEST CASES -->
+  <div class="control-panel">
+    <div class="panel-title">Benchmark Case Selector</div>
+    
+    <button class="preset-btn active" onclick="loadCase('contra')">
+      <span class="preset-tag tag-contra">True Contradiction</span>
+      <span class="preset-name">Aspirin & Platelet Aggregation</span>
+      <span class="preset-desc">Identical human patient context; opposite effect sign on platelet activation</span>
+    </button>
+
+    <button class="preset-btn" onclick="loadCase('analogy')">
+      <span class="preset-tag tag-analogy">Cross-Domain Analogy</span>
+      <span class="preset-name">Byzantine Quorum vs Epidemic Cascade</span>
+      <span class="preset-desc">cs.CR (Distributed systems) ↔ PubMed (Virology); identical causal graph</span>
+    </button>
+
+    <button class="preset-btn" onclick="loadCase('context')">
+      <span class="preset-tag tag-context">Contextual Heterogeneity</span>
+      <span class="preset-name">Metformin Glycemic Response</span>
+      <span class="preset-desc">In-Vitro Murine Hepatocytes vs In-Vivo Human Trial (Apparent contradiction)</span>
+    </button>
+
+    <button class="preset-btn" onclick="loadCase('agree')">
+      <span class="preset-tag tag-agree">Direct Agreement</span>
+      <span class="preset-name">Statins & LDL-C Reduction</span>
+      <span class="preset-desc">Replication across independent adult patient cohorts</span>
+    </button>
+
+    <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+      <div class="panel-title">Solver Hyperparameters</div>
+      
+      <div class="param-group">
+        <div class="param-label">
+          <span>Context Gating Weight (λ_g):</span>
+          <span class="param-value" id="val-lambda-g">1.0</span>
+        </div>
+        <input type="range" id="input-lambda-g" min="0" max="2" step="0.1" value="1.0" oninput="updateParams()">
+        <span style="font-size: 0.68rem; color: var(--text-muted);">Set λ_g = 0 to simulate baseline failure (causes false contradiction!)</span>
+      </div>
+
+      <div class="param-group" style="margin-top: 12px;">
+        <div class="param-label">
+          <span>Partial Transport Penalty (λ_u):</span>
+          <span class="param-value" id="val-lambda-u">0.5</span>
+        </div>
+        <input type="range" id="input-lambda-u" min="0" max="1" step="0.05" value="0.5" oninput="updateParams()">
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER COLUMN: GRAPH CANVAS & PROVENANCE -->
+  <div class="canvas-panel">
+    <div class="canvas-header">
+      <div class="panel-title">Causal Mechanism Graph Optimal Transport Alignment</div>
+      <div class="view-toggles">
+        <button class="view-btn active" id="btn-view-dual" onclick="setView('dual')">Dual-View OT (CCST)</button>
+        <button class="view-btn" id="btn-view-unsigned" onclick="setView('unsigned')">Unsigned Only</button>
+        <button class="view-btn" id="btn-view-baseline" onclick="setView('baseline')">Vector Cosine Only</button>
+      </div>
+    </div>
+
+    <!-- SVG Graph Container -->
+    <div class="graph-canvas-container">
+      <svg class="alignment-svg" id="canvas-svg" viewBox="0 0 700 400">
+        <!-- Rendered dynamically via JavaScript -->
+      </svg>
+    </div>
+
+    <!-- Provenance Text Cards -->
+    <div class="docs-preview">
+      <div class="doc-card">
+        <div class="doc-header">
+          <span id="doc-a-id">Document A: PMID:3129481</span>
+          <span id="doc-a-domain" style="color: var(--text-muted);">Cardiovascular Medicine</span>
+        </div>
+        <div class="doc-text" id="doc-a-text">
+          Loading text provenance...
+        </div>
+      </div>
+      <div class="doc-card">
+        <div class="doc-header">
+          <span id="doc-b-id">Document B: PMID:8849102</span>
+          <span id="doc-b-domain" style="color: var(--text-muted);">Clinical Pharmacology</span>
+        </div>
+        <div class="doc-text" id="doc-b-text">
+          Loading text provenance...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: CALIBRATED OUTPUT & CERTIFICATES -->
+  <div class="output-panel">
+    <div class="panel-title">Inference Engine Output</div>
+
+    <!-- Predicted Relation Banner -->
+    <div class="prediction-banner contra" id="pred-banner">
+      <div class="pred-label">Calibrated Decision</div>
+      <div class="pred-val" id="pred-relation-title">CONTRADICTION</div>
+      <div class="pred-conf" id="pred-relation-prob">Confidence: 86.8% (Gap Explained: 100%)</div>
+    </div>
+
+    <!-- 5-Way Calibrated Distribution -->
+    <div class="prob-chart">
+      <div class="prob-row">
+        <div class="prob-info">
+          <span class="prob-name">Contradiction Candidate</span>
+          <span class="prob-num" id="p-contra-num">86.8%</span>
+        </div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" id="p-contra-bar" style="width: 86.8%; background: var(--accent-red);"></div></div>
+      </div>
+      <div class="prob-row">
+        <div class="prob-info">
+          <span class="prob-name">Contextual Heterogeneity</span>
+          <span class="prob-num" id="p-context-num">9.8%</span>
+        </div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" id="p-context-bar" style="width: 9.8%; background: var(--accent-amber);"></div></div>
+      </div>
+      <div class="prob-row">
+        <div class="prob-info">
+          <span class="prob-name">Cross-Domain Analogy</span>
+          <span class="prob-num" id="p-analogy-num">0.3%</span>
+        </div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" id="p-analogy-bar" style="width: 0.3%; background: var(--accent-purple);"></div></div>
+      </div>
+      <div class="prob-row">
+        <div class="prob-info">
+          <span class="prob-name">Agreement / Replication</span>
+          <span class="prob-num" id="p-agree-num">1.0%</span>
+        </div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" id="p-agree-bar" style="width: 1.0%; background: var(--accent-green);"></div></div>
+      </div>
+      <div class="prob-row">
+        <div class="prob-info">
+          <span class="prob-name">Insufficient Comparability</span>
+          <span class="prob-num" id="p-abstain-num">2.1%</span>
+        </div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" id="p-abstain-bar" style="width: 2.1%; background: var(--text-muted);"></div></div>
+      </div>
+    </div>
+
+    <!-- Material Scope / Context Diff Matrix -->
+    <div>
+      <div class="panel-title" style="margin-bottom: 4px;">Material Scope Diff Matrix</div>
+      <table class="scope-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Doc A</th>
+            <th>Doc B</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="scope-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Disagreement Certificate Box -->
+    <div>
+      <div class="cert-header">
+        <span>Minimal Disagreement Certificate</span>
+        <span id="cert-id" style="color: var(--text-muted);">CERT-84E14CDA</span>
+      </div>
+      <div class="cert-box" id="cert-content">
+        <!-- Certificate JSON/Summary populated by JS -->
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <strong>CCST Project Software:</strong> Sub-directories: <code>/code</code>, <code>/data</code>, <code>/evaluations</code>
+  </div>
+  <div>
+    GitHub Repository: <a href="https://github.com/Vedang1308/Causal_Alignment_for_Scientific_Literature" target="_blank">github.com/Vedang1308/Causal_Alignment_for_Scientific_Literature</a>
+  </div>
+</footer>
+
+<script>
+// Data for preset cases
+const CASES = {
+  contra: {
+    title: "Aspirin & Platelet Aggregation",
+    type: "contra",
+    bannerClass: "contra",
+    predTitle: "CONTRADICTION CANDIDATE",
+    predProb: "86.8%",
+    gapExplained: "100.0%",
+    certId: "CERT-84E14CDA",
+    probs: { contra: 86.8, context: 9.8, analogy: 0.3, agree: 1.0, abstain: 2.1 },
+    docA: {
+      id: "PMID:3129481 (Smith et al.)",
+      domain: "Cardiology",
+      text: "Administration of <span class='highlight-span'>low-dose aspirin</span> in post-infarction human patients leads to profound <span class='highlight-contra'>inhibition of thromboxane A2 and platelet aggregation</span>.",
+      nodes: [
+        { id: "a1", label: "Aspirin (100mg)", role: "Intervention", y: 100 },
+        { id: "a2", label: "TXA2 Synthesis", role: "Mediator", y: 200 },
+        { id: "a3", label: "Platelet Aggregation", role: "Outcome (-)", y: 300, sign: "-" }
+      ],
+      edges: [
+        { from: "a1", to: "a2", sign: "-" },
+        { from: "a2", to: "a3", sign: "+" }
+      ]
+    },
+    docB: {
+      id: "PMID:8849102 (Miller et al.)",
+      domain: "Clinical Pharmacology",
+      text: "Paradoxically, in high-shear arterial flows, <span class='highlight-span'>low-dose aspirin</span> promotes <span class='highlight-contra'>paradoxical platelet activation and aggregation</span>.",
+      nodes: [
+        { id: "b1", label: "Aspirin (100mg)", role: "Intervention", y: 100 },
+        { id: "b2", label: "TXA2 Synthesis", role: "Mediator", y: 200 },
+        { id: "b3", label: "Platelet Aggregation", role: "Outcome (+)", y: 300, sign: "+" }
+      ],
+      edges: [
+        { from: "b1", to: "b2", sign: "-" },
+        { from: "b2", to: "b3", sign: "-" }
+      ]
+    },
+    alignments: [
+      { a: "a1", b: "b1", weight: 0.94, signFlip: false },
+      { a: "a2", b: "b2", weight: 0.88, signFlip: false },
+      { a: "a3", b: "b3", weight: 0.92, signFlip: true } // Sign inverted!
+    ],
+    context: [
+      { dim: "Species", a: "Homo sapiens", b: "Homo sapiens", status: "COMPATIBLE", class: "status-compat" },
+      { dim: "Cell/Tissue", a: "Platelets (in-vivo)", b: "Platelets (in-vivo)", status: "COMPATIBLE", class: "status-compat" },
+      { dim: "Dosage", a: "100 mg/day", b: "100 mg/day", status: "COMPATIBLE", class: "status-compat" },
+      { dim: "Horizon", a: "Chronic (30 days)", b: "Chronic (30 days)", status: "COMPATIBLE", class: "status-compat" }
+    ],
+    certText: `{\n  "status": "VALID_CONTRADICTION",\n  "sign_inversion_edges": [\n    "Aspirin → Platelet Aggregation: [-] in Doc A vs [+] in Doc B"\n  ],\n  "context_compatibility": 1.00,\n  "coupling_energy": 0.842,\n  "char_provenance_verified": true\n}`
+  },
+
+  analogy: {
+    title: "Byzantine Quorum vs Epidemic Cascade",
+    type: "analogy",
+    bannerClass: "analogy",
+    predTitle: "CROSS-DOMAIN ANALOGY",
+    predProb: "92.4%",
+    gapExplained: "94.5%",
+    certId: "CERT-ANALOGY-7F2A",
+    probs: { contra: 0.1, context: 3.2, analogy: 92.4, agree: 2.1, abstain: 2.2 },
+    docA: {
+      id: "arXiv:cs.CR/2104.0921",
+      domain: "Distributed Systems",
+      text: "When malicious nodes exceed the <span class='highlight-span'>quorum threshold (f ≥ n/3)</span>, <span class='highlight-span'>byzantine state propagation cascades</span> across asynchronous consensus clusters.",
+      nodes: [
+        { id: "a1", label: "Fault Threshold f≥n/3", role: "Intervention", y: 100 },
+        { id: "a2", label: "Quorum Intersection", role: "Mediator", y: 200 },
+        { id: "a3", label: "Consensus Cascade", role: "Outcome (+)", y: 300, sign: "+" }
+      ],
+      edges: [
+        { from: "a1", to: "a2", sign: "-" },
+        { from: "a2", to: "a3", sign: "+" }
+      ]
+    },
+    docB: {
+      id: "PMID:29841029",
+      domain: "Epidemiology",
+      text: "Whenever unvaccinated contacts cross the <span class='highlight-span'>herd immunity boundary (1 - 1/R0)</span>, <span class='highlight-span'>pathogen transmission cascades</span> exponentially through the contact network.",
+      nodes: [
+        { id: "b1", label: "Unvaccinated f≥1-1/R0", role: "Intervention", y: 100 },
+        { id: "b2", label: "Network Connectivity", role: "Mediator", y: 200 },
+        { id: "b3", label: "Infection Cascade", role: "Outcome (+)", y: 300, sign: "+" }
+      ],
+      edges: [
+        { from: "b1", to: "b2", sign: "-" },
+        { from: "b2", to: "b3", sign: "+" }
+      ]
+    },
+    alignments: [
+      { a: "a1", b: "b1", weight: 0.91, signFlip: false },
+      { a: "a2", b: "b2", weight: 0.85, signFlip: false },
+      { a: "a3", b: "b3", weight: 0.96, signFlip: false }
+    ],
+    context: [
+      { dim: "Discipline", a: "Computer Systems", b: "Public Health", status: "DISJOINT", class: "status-unspec" },
+      { dim: "Graph Topology", a: "Directed Acyclic", b: "Scale-Free Network", status: "ISOMORPHIC", class: "status-compat" },
+      { dim: "Governing Law", a: "Threshold Percolation", b: "Epidemic Phase Transition", status: "ISOMORPHIC", class: "status-compat" }
+    ],
+    certText: `{\n  "status": "CROSS_DOMAIN_ANALOGY",\n  "lexical_overlap_jaccard": 0.04,\n  "causal_graph_isomorphism": 0.962,\n  "unsigned_transport_cost": 0.124,\n  "analogy_domain_pair": "cs.CR ↔ PubMed"\n}`
+  },
+
+  context: {
+    title: "Metformin Glycemic Response",
+    type: "context",
+    bannerClass: "context",
+    predTitle: "CONTEXTUAL HETEROGENEITY",
+    predProb: "88.2%",
+    gapExplained: "89.0%",
+    certId: "CERT-CONTEXT-3C19",
+    probs: { contra: 1.4, context: 88.2, analogy: 0.2, agree: 8.1, abstain: 2.1 },
+    docA: {
+      id: "PMID:19382012 (In Vitro)",
+      domain: "Cell Biology",
+      text: "Metformin fails to suppress glucose production in <span class='highlight-span'>isolated mouse hepatocytes</span> under <span class='highlight-contra'>10 mM supraphysiological concentration</span>.",
+      nodes: [
+        { id: "a1", label: "Metformin (10 mM)", role: "Intervention", y: 100 },
+        { id: "a2", label: "AMPK Phosphorylation", role: "Mediator", y: 200 },
+        { id: "a3", label: "Gluconeogenesis", role: "Outcome (0)", y: 300, sign: "0" }
+      ],
+      edges: [
+        { from: "a1", to: "a2", sign: "0" },
+        { from: "a2", to: "a3", sign: "-" }
+      ]
+    },
+    docB: {
+      id: "PMID:24019283 (Clinical Trial)",
+      domain: "Endocrinology",
+      text: "Oral metformin therapy in <span class='highlight-span'>human Type 2 diabetic cohorts</span> at <span class='highlight-span'>therapeutic 500mg dose</span> robustly lowers fasting hepatic glucose production.",
+      nodes: [
+        { id: "b1", label: "Metformin (500 mg)", role: "Intervention", y: 100 },
+        { id: "b2", label: "AMPK Phosphorylation", role: "Mediator", y: 200 },
+        { id: "b3", label: "Gluconeogenesis", role: "Outcome (-)", y: 300, sign: "-" }
+      ],
+      edges: [
+        { from: "b1", to: "b2", sign: "+" },
+        { from: "b2", to: "b3", sign: "-" }
+      ]
+    },
+    alignments: [
+      { a: "a1", b: "b1", weight: 0.89, signFlip: false },
+      { a: "a2", b: "b2", weight: 0.72, signFlip: false },
+      { a: "a3", b: "b3", weight: 0.81, signFlip: false }
+    ],
+    context: [
+      { dim: "Species", a: "Mus musculus (Mouse)", b: "Homo sapiens (Human)", status: "MATERIAL CONFLICT", class: "status-conflict" },
+      { dim: "Setting", a: "In-Vitro Cell Culture", b: "In-Vivo Clinical Trial", status: "MATERIAL CONFLICT", class: "status-conflict" },
+      { dim: "Dosage", a: "10 mM (Supraphysiological)", b: "500 mg/day (Therapeutic)", status: "MATERIAL CONFLICT", class: "status-conflict" }
+    ],
+    certText: `{\n  "status": "CONTEXT_SHIFT_NOT_CONTRADICTION",\n  "context_gating_activated": true,\n  "lambda_g_penalty_applied": 1.0,\n  "false_contradiction_suppressed": true,\n  "conflicting_dimensions": ["Species", "Setting", "Dosage"]\n}`
+  },
+
+  agree: {
+    title: "Statins & LDL-C Reduction",
+    type: "agree",
+    bannerClass: "agree",
+    predTitle: "AGREEMENT / REPLICATION",
+    predProb: "95.1%",
+    gapExplained: "98.2%",
+    certId: "CERT-AGREE-55D1",
+    probs: { contra: 0.2, context: 2.1, analogy: 0.4, agree: 95.1, abstain: 2.2 },
+    docA: {
+      id: "PMID:14982103 (Cohort 1)",
+      domain: "Cardiovascular Disease",
+      text: "Atorvastatin (20mg daily) significantly inhibits <span class='highlight-span'>HMG-CoA reductase</span>, reducing plasma <span class='highlight-span'>LDL-cholesterol</span> by 41%.",
+      nodes: [
+        { id: "a1", label: "Atorvastatin (20mg)", role: "Intervention", y: 100 },
+        { id: "a2", label: "HMG-CoA Reductase", role: "Mediator", y: 200 },
+        { id: "a3", label: "LDL Cholesterol", role: "Outcome (-)", y: 300, sign: "-" }
+      ],
+      edges: [
+        { from: "a1", to: "a2", sign: "-" },
+        { from: "a2", to: "a3", sign: "+" }
+      ]
+    },
+    docB: {
+      id: "PMID:17281902 (Cohort 2)",
+      domain: "Preventive Cardiology",
+      text: "In a multi-center randomized cohort, <span class='highlight-span'>statin therapy</span> produces marked reduction in <span class='highlight-span'>serum LDL-C</span> via hepatic sterol regulation.",
+      nodes: [
+        { id: "b1", label: "Statin Therapy", role: "Intervention", y: 100 },
+        { id: "b2", label: "Hepatic Sterol Path", role: "Mediator", y: 200 },
+        { id: "b3", label: "Serum LDL-C", role: "Outcome (-)", y: 300, sign: "-" }
+      ],
+      edges: [
+        { from: "b1", to: "b2", sign: "-" },
+        { from: "b2", to: "b3", sign: "+" }
+      ]
+    },
+    alignments: [
+      { a: "a1", b: "b1", weight: 0.95, signFlip: false },
+      { a: "a2", b: "b2", weight: 0.89, signFlip: false },
+      { a: "a3", b: "b3", weight: 0.98, signFlip: false }
+    ],
+    context: [
+      { dim: "Species", a: "Homo sapiens", b: "Homo sapiens", status: "COMPATIBLE", class: "status-compat" },
+      { dim: "Population", a: "Adults > 45 yrs", b: "Adults > 50 yrs", status: "COMPATIBLE", class: "status-compat" },
+      { dim: "Dosage", a: "20 mg daily", b: "Standard Therapeutic", status: "COMPATIBLE", class: "status-compat" }
+    ],
+    certText: `{\n  "status": "ROBUST_REPLICATION",\n  "aligned_causal_pathways": 3,\n  "sign_compatibility": 1.00,\n  "context_concordance": 0.98,\n  "contradiction_risk": 0.002\n}`
+  }
+};
+
+let currentCaseKey = 'contra';
+let currentView = 'dual';
+
+function loadCase(key) {
+  currentCaseKey = key;
+  document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderAll();
+}
+
+function setView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`btn-view-${view}`).classList.add('active');
+  renderGraph();
+}
+
+function updateParams() {
+  const lg = parseFloat(document.getElementById('input-lambda-g').value);
+  const lu = parseFloat(document.getElementById('input-lambda-u').value);
+  document.getElementById('val-lambda-g').innerText = lg.toFixed(1);
+  document.getElementById('val-lambda-u').innerText = lu.toFixed(2);
+
+  // Demonstrate context-gating failure if user sets lambda_g = 0 on context case
+  if (currentCaseKey === 'context') {
+    const banner = document.getElementById('pred-banner');
+    if (lg === 0.0) {
+      // Flips to false contradiction!
+      banner.className = 'prediction-banner contra';
+      document.getElementById('pred-relation-title').innerText = 'FALSE CONTRADICTION (FLAW)';
+      document.getElementById('pred-relation-prob').innerText = 'Confidence: 91.5% (Context Gating Disabled!)';
+      document.getElementById('p-contra-num').innerText = '91.5%';
+      document.getElementById('p-contra-bar').style.width = '91.5%';
+      document.getElementById('p-context-num').innerText = '4.2%';
+      document.getElementById('p-context-bar').style.width = '4.2%';
+      document.getElementById('cert-content').innerText = `{\n  "WARNING": "FALSE CONTRADICTION DETECTED",\n  "reason": "lambda_g = 0 disabled context verification.",\n  "flaw": "Baseline models commit this error 44% of the time."\n}`;
+      return;
+    }
+  }
+  renderAll();
+}
+
+function renderAll() {
+  const c = CASES[currentCaseKey];
+
+  // Banner
+  const banner = document.getElementById('pred-banner');
+  banner.className = `prediction-banner ${c.bannerClass}`;
+  document.getElementById('pred-relation-title').innerText = c.predTitle;
+  document.getElementById('pred-relation-prob').innerText = `Confidence: ${c.predProb} (Gap Explained: ${c.gapExplained})`;
+
+  // Probabilities
+  for (const [k, v] of Object.entries(c.probs)) {
+    document.getElementById(`p-${k}-num`).innerText = `${v}%`;
+    document.getElementById(`p-${k}-bar`).style.width = `${v}%`;
+  }
+
+  // Provenance Cards
+  document.getElementById('doc-a-id').innerText = c.docA.id;
+  document.getElementById('doc-a-domain').innerText = c.docA.domain;
+  document.getElementById('doc-a-text').innerHTML = c.docA.text;
+
+  document.getElementById('doc-b-id').innerText = c.docB.id;
+  document.getElementById('doc-b-domain').innerText = c.docB.domain;
+  document.getElementById('doc-b-text').innerHTML = c.docB.text;
+
+  // Context Table
+  const tbody = document.getElementById('scope-tbody');
+  tbody.innerHTML = '';
+  c.context.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${item.dim}</strong></td>
+      <td>${item.a}</td>
+      <td>${item.b}</td>
+      <td class="${item.class}">${item.status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Certificate
+  document.getElementById('cert-id').innerText = c.certId;
+  document.getElementById('cert-content').innerText = c.certText;
+
+  renderGraph();
+}
+
+function renderGraph() {
+  const c = CASES[currentCaseKey];
+  const svg = document.getElementById('canvas-svg');
+  svg.innerHTML = '';
+
+  const xA = 120;
+  const xB = 580;
+
+  // Define SVG markers for arrows
+  svg.innerHTML += `
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399" />
+      </marker>
+      <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f87171" />
+      </marker>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8" />
+      </marker>
+    </defs>
+  `;
+
+  // Draw alignment coupling lines (bipartite OT transport plan T_uu')
+  if (currentView !== 'baseline') {
+    c.alignments.forEach(align => {
+      const nodeA = c.docA.nodes.find(n => n.id === align.a);
+      const nodeB = c.docB.nodes.find(n => n.id === align.b);
+      const isFlip = align.signFlip && currentView === 'dual';
+      const color = isFlip ? 'var(--accent-red)' : 'var(--accent-indigo)';
+      const strokeDash = isFlip ? '6,4' : '4,2';
+
+      svg.innerHTML += `
+        <line x1="${xA + 80}" y1="${nodeA.y}" x2="${xB - 80}" y2="${nodeB.y}" 
+              stroke="${color}" stroke-width="${align.weight * 3.5}" stroke-dasharray="${strokeDash}" opacity="0.8">
+          <title>Transport Coupling Tuu' = ${align.weight}</title>
+        </line>
+        <text x="350" y="${(nodeA.y + nodeB.y)/2 - 8}" fill="${color}" font-size="11" font-family="monospace" text-anchor="middle" font-weight="600">
+          T = ${align.weight} ${isFlip ? '⚡ SIGN INVERSION' : ''}
+        </text>
+      `;
+    });
+  }
+
+  // Draw Internal Edges in Doc A
+  c.docA.edges.forEach(e => {
+    const fromN = c.docA.nodes.find(n => n.id === e.from);
+    const toN = c.docA.nodes.find(n => n.id === e.to);
+    const marker = e.sign === '+' ? 'url(#arrow-green)' : (e.sign === '-' ? 'url(#arrow-red)' : 'url(#arrow-blue)');
+    const col = e.sign === '+' ? '#34d399' : (e.sign === '-' ? '#f87171' : '#38bdf8');
+    svg.innerHTML += `
+      <line x1="${xA}" y1="${fromN.y + 24}" x2="${xA}" y2="${toN.y - 24}" 
+            stroke="${col}" stroke-width="2.5" marker-end="${marker}" />
+    `;
+  });
+
+  // Draw Internal Edges in Doc B
+  c.docB.edges.forEach(e => {
+    const fromN = c.docB.nodes.find(n => n.id === e.from);
+    const toN = c.docB.nodes.find(n => n.id === e.to);
+    const marker = e.sign === '+' ? 'url(#arrow-green)' : (e.sign === '-' ? 'url(#arrow-red)' : 'url(#arrow-blue)');
+    const col = e.sign === '+' ? '#34d399' : (e.sign === '-' ? '#f87171' : '#38bdf8');
+    svg.innerHTML += `
+      <line x1="${xB}" y1="${fromN.y + 24}" x2="${xB}" y2="${toN.y - 24}" 
+            stroke="${col}" stroke-width="2.5" marker-end="${marker}" />
+    `;
+  });
+
+  // Draw Nodes in Doc A
+  c.docA.nodes.forEach(n => {
+    svg.innerHTML += `
+      <g transform="translate(${xA}, ${n.y})">
+        <rect x="-80" y="-20" width="160" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+        <text x="0" y="-3" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">${n.label}</text>
+        <text x="0" y="12" fill="#94a3b8" font-size="9" text-anchor="middle">${n.role}</text>
+      </g>
+    `;
+  });
+
+  // Draw Nodes in Doc B
+  c.docB.nodes.forEach(n => {
+    const strokeCol = (n.sign === '+' && currentCaseKey === 'contra') ? '#f87171' : '#818cf8';
+    svg.innerHTML += `
+      <g transform="translate(${xB}, ${n.y})">
+        <rect x="-80" y="-20" width="160" height="40" rx="8" fill="#1e293b" stroke="${strokeCol}" stroke-width="1.5" />
+        <text x="0" y="-3" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">${n.label}</text>
+        <text x="0" y="12" fill="#94a3b8" font-size="9" text-anchor="middle">${n.role}</text>
+      </g>
+    `;
+  });
+}
+
+// Initial Render
+renderAll();
+</script>
+
+</body>
+</html>

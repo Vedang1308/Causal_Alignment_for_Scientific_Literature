@@ -161,3 +161,4 @@
 | **"How did you avoid data leakage in the benchmark?"** | *"We enforced a strict 60/20/20 train/dev/test split grouped by transformation family. The held-out test set remains completely frozen, and all threshold selection and calibration take place exclusively on the development split."* |
 | **"Why Optimal Transport instead of Graph Neural Networks (GNNs)?"** | *"GNNs require thousands of labeled paired graphs to train node embeddings and struggle to generalize to unseen scientific domains. Optimal Transport provides exact zero-shot / few-shot graph alignment with explicit partial matching and formal mathematical distance bounds."* |
 | **"How do you know the extraction didn't hallucinate context?"** | *"Our extractor enforces strict character span grounding: every single extracted mechanism must match its verbatim characters in the source abstract, verified with 100% character precision in our unit test suite."* |
+

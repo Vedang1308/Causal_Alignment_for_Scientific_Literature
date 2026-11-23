@@ -24,7 +24,33 @@ Scientific papers often describe equivalent causal mechanisms using disjoint dom
 
 ---
 
-## 2. Six-Phase Architecture
+## 2. Software Repository Organization (`CODE/`, `DATA/`, `EVALUATIONS/`)
+
+Per the submission guidelines, our project software is organized into three primary sub-directories:
+
+```
+├── code/                       # Complete pipeline code, live demo runner, and interactive dashboard
+│   ├── run_demo.py             # One-click CLI demo runner (sub-second execution)
+│   ├── ccst_interactive_demo.html # Interactive visual web dashboard (live graph & certificate viewer)
+│   └── README.md               # Code architecture and phase index
+│
+├── data/                       # Scientific datasets, benchmarks, and neural embeddings
+│   ├── processed/              # 2,054 published papers (PubMed/arXiv), graphs, and (2054, 384) embeddings
+│   ├── benchmark/              # 240 expert-annotated pairs across 4 strata (α = 0.767)
+│   └── README.md               # Dataset statistics, ingestion pipeline, and quality controls
+│
+└── evaluations/                # Empirical evaluations, benchmark metrics, and ablation matrices
+    ├── final_evaluation_summary.json # 60/20/20 test split metrics with 95% bootstrap CIs
+    ├── table1_main_results.tex # LaTeX Table I: CCST vs BM25, TF-IDF, SBERT, Contriever, LLM
+    ├── table2_ablations.tex    # LaTeX Table II: Component ablation analysis
+    ├── sample_certificate.json # Full minimal disagreement certificate artifact
+    ├── run_evaluations.py      # Automated reproduction script for all benchmark evaluations
+    └── README.md               # Experimental methodology and reproduction instructions
+```
+
+---
+
+## 3. Six-Phase Architecture
 
 ```
 ├── phase1_foundation/                  # Core Pydantic schemas, primitives, graphs, and verification
